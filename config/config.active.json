@@ -1,0 +1,23 @@
+{
+    "MySQL_DB": {
+        "host": "localhost",
+        "port": 3306,
+        "name": "studybuddies",
+        "username": "root",
+        "password": "$passw0rd123"
+    },
+    "Mongo_DB": {
+        "host": "127.0.0.1",
+        "port": "27017",
+        "dbAdmin": "admin",
+        "username": "admin",
+        "password": "ettJeoqnfKcaWKh1",
+        "name": "studybuddies"
+    },
+    "Launch_App": {
+        "host": "0.0.0.0",
+        "port": 3000
+    },
+    "Origins_Allowed": ["http://localhost:4200"],
+    "LOG_LEVEL": "info"
+}
