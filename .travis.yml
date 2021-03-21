@@ -12,9 +12,9 @@ before_install:
   - mysql -e 'CREATE DATABASE studybuddies;'
 language: node_js
 node_js:
-  - "12.21.0"
+  - "14.16.0"
 install:
-  - pip install codacy-coverage
+  - npm install codacy-coverage
 script:
   - npm update
   - npm run build
