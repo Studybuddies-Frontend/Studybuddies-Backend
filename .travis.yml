@@ -6,7 +6,7 @@ before_script:
   - npm install -g @angular/cli
   - npm install
   - sleep 15
-  - mongo studybuddies_test --eval "db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});"
+  - mongo studybuddies_test --eval "db.createUser({user:"travis",password:"test",role:["readWrite"]});"
 before_install:
   - mysql -e 'CREATE DATABASE studybuddies;'
 language: node_js
