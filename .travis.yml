@@ -5,7 +5,6 @@ services:
 before_script:
   - npm install -g @angular/cli
   - npm install
-  - cd studybuddies
   - sleep 15
   - mongo studybuddies --eval "db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});"
 before_install:
