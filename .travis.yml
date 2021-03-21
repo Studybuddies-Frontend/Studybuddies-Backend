@@ -3,6 +3,7 @@ services:
   - mysql
   - mongodb
 before_script:
+  - --auth
   - sleep 15
   - mongo studybuddies --eval 'db.createUser({user:"travis",pwd:"test",role:["readWrite"]});'
   - npm install -g @angular/cli
