@@ -16,4 +16,4 @@ install:
   - npm install codacy-coverage
 script:
   - npm update
-  - npm run start
+  - npm run build
