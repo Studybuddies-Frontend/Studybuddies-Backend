@@ -1,0 +1,20 @@
+dist: trusty
+services:
+  - mysql
+  - mongodb
+before_script:
+  - npm install -g @angular/cli
+  - npm install
+  - cd studybuddies
+  - sleep 15
+  - mongo studybuddies --eval "db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});"
+before_install:
+  - mysql -e 'CREATE DATABASE studybuddies;'
+language: node_js
+node_js:
+  - "12.21.0"
+install:
+  - pip install codacy-coverage
+script:
+  - npm update
+  - npm run build
