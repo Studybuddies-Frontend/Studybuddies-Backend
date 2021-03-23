@@ -17,3 +17,4 @@ install:
 script:
   - npm update
   - npm run deploy
+  - npm run build
