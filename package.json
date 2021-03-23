@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "node api-studdybuddies-backend.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js && webpack-dev-server ",
+    "build": "webpack --config webpack.conf.js",
+    "deploy": "npm run build && gh-pages -d build",
+  
+    
   },
   "author": "",
   "license": "ISC",
