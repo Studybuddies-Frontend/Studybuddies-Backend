@@ -16,7 +16,7 @@
     },
     "Launch_App": {
         "host": "46.101.34.232",
-        "port": 1739
+        "port": 1740
     },
     "Origins_Allowed": ["http://46.101.34.232:1739"],
     "LOG_LEVEL": "info"
