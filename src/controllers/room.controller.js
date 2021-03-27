@@ -4,11 +4,15 @@ const mongoose =  require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
 const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
-const mongodbRoom = require('../databases/mongodb/models/room.model')
+const mongodbRoom = require('../databases/mongodb/models/rooms.model')
 
 // conectar a la bbdd
 var mongoDB = "mongodb://127.0.0.1/studybuddies";
-mongoose.connect(mongoDB);
+mongoose.connect(mongoDB, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+  });
 
 const create = async function(req, res) {
     
@@ -24,7 +28,9 @@ const create = async function(req, res) {
     let ending_time = new Date();
     let price_per_hour = 0;
     let is_private = false;
+    let id_user = "";
 
+    let room_url
     let domain = "";
     let options = {
         
@@ -59,6 +65,9 @@ const create = async function(req, res) {
         if(req.body.is_private) {
             is_private = req.body.is_private;
         }
+        if(req.body.id_user) {
+            id_user = req.body.id_user;
+        }
 
     }
 
@@ -77,6 +86,9 @@ const create = async function(req, res) {
         ending_time : ending_time,
         price_per_hour : price_per_hour,
         is_private : is_private,
+        id_user : id_user,
+        room_url : "meet.jit.si/studybuddies-"+id
+        /*
         domain : "meet.jit.si",
         options : {
             roomName : "studybuddies-"+id,
@@ -84,6 +96,7 @@ const create = async function(req, res) {
             height: 700,
             parentNode: "document.querySelector('#meet')"
         }
+        */
     };
 
     //creo la conexion a la base de datos mongodb
@@ -111,10 +124,6 @@ const create = async function(req, res) {
     // Devolvemos la respuesta
     if (nErrores == 0) {
         console.log(`Room creada correctamente`)
-        res.status(200)
-            .json({
-                roomBody
-            });
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');

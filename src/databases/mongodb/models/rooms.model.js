@@ -13,7 +13,10 @@ const RoomSchema = new Schema({
     is_private : {
         type : Boolean,
         default : false
-    },    
+    },
+    id_user : String,
+    room_url : String,
+    /*
     domain : String,
     options : {
         roomName : String,
@@ -21,6 +24,7 @@ const RoomSchema = new Schema({
         height: Number,
         parentNode: String
     }
+    */
 });
 
 const room = mongoose.model("rooms", RoomSchema);
