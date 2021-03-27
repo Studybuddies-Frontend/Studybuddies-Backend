@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const RoomSchema = new Schema({
-    guid_room : String,
+    guid: String,
     description : String,
     university : String,
     degree : String,

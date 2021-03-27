@@ -77,7 +77,7 @@ const create = async function(req, res) {
     const id = uuidv4();
 
     const roomBody = {
-        guid_room : id,
+        guid : id,
         description: description,
         university : university,
         degree : degree,
@@ -123,7 +123,8 @@ const create = async function(req, res) {
 
     // Devolvemos la respuesta
     if (nErrores == 0) {
-        console.log(`Room creada correctamente`)
+        console.log(`Room creada correctamente`);
+        res.status(200).json({roomBody});
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');
