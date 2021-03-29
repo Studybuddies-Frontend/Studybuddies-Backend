@@ -38,7 +38,6 @@ const getRooms = function (db, fechaActual) {
       
 			const query = {}
 
-      
 			//if (fechaActual){
 			//	query.fecha_fin = { $gte: fechaActual };
             //}
@@ -63,7 +62,45 @@ const getRooms = function (db, fechaActual) {
 )
 }
 
+const getRoomById = function (db, fechaActual, guid) {
+	return new Promise((resolve, reject) => {
+    
+		try {
+      
+			const roomCollection = db.db('studybuddies').collection('rooms');
+      
+			const query = {}
+
+      
+			//if (fechaActual){
+			//	query.fecha_fin = { $gte: fechaActual };
+            //}
+            if(guid){
+                query.guid = guid;
+            }
+			const document = roomCollection.find(query).toArray(function (err, result) {
+        
+				if (err){ 
+                    reject(err)
+                }
+
+        
+				resolve(result);
+      
+			});
+    
+		} catch (err) {
+
+		      reject(err);
+    
+		}
+  
+	}
+)
+}
+
 module.exports = {
     room,
-    getRooms
+    getRooms,
+    getRoomById
 }
