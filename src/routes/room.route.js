@@ -7,3 +7,4 @@ router.get('/:guid', roomController.getById);
 
 
 module.exports = router;
+

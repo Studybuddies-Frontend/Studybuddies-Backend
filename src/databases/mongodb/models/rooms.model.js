@@ -97,10 +97,12 @@ const getRoomById = function (db, fechaActual, guid) {
   
 	}
 )
+
 }
 
 module.exports = {
     room,
     getRooms,
     getRoomById
+
 }
