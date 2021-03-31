@@ -132,6 +132,113 @@ const create = async function(req, res) {
 
 }
 
+const getAll = async function(req, res) {
+
+    let nErrores = 0;
+    let allRoom = {};
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+    let now = new Date();
+
+    if(nErrores == 0) {
+        try {
+            allRoom = await new mongodbRoom.getRooms(conexionMongodb, now.getTime());
+        }
+        catch(err) {
+            console.log(`Error al conectar con el servidor.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+ 
+    if (nErrores == 0) 
+    {
+    await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Salas obtenidas con éxito`)
+        res.status(200)
+            .json({
+                allRoom:allRoom
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }  
+
+}
+
+const getById = async function(req, res) {
+
+    let nErrores = 0;
+    let room = {};
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+    let now = new Date();
+
+    if(nErrores == 0) {
+        try {
+            room = await new mongodbRoom.getRoomById(conexionMongodb, now.getTime(), req.params.guid);
+            if (!room) {
+                statusCode = 401;
+                statusMessage = 'Invalid Credentials';
+                nErrores++;
+            }
+        }
+        catch(err) {
+            console.log(`Error al obtener la sala.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+ 
+    if (nErrores == 0) 
+    {
+    await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Sala obtenida con éxito`)
+        res.status(200)
+            .json({
+                room:room
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }  
+
+}
+
+
 module.exports = {
-    create
+    create,
+    getAll,
+    getById
+
 }
