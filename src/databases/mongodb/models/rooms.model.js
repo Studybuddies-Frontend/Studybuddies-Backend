@@ -1,33 +1,38 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
 
-const RoomSchema = new Schema({
-    guid: String,
-    description : String,
-    university : String,
-    degree : String,
-    subject : String,
-    starting_time : Date,
-    ending_time : Date,
-    price_per_hour : Number,
-    is_private : {
-        type : Boolean,
-        default : false
-    },
-    id_user : String,
-    room_url : String,
-    /*
-    domain : String,
-    options : {
-        roomName : String,
-        width : Number,
-        height: Number,
-        parentNode: String
+
+class Room {
+    constructor() {
+        this.guid = '',
+        this.description = '',
+        this.university = '',
+        this.degree = '',
+        this.subject = '',
+        this.starting_time = null,
+        this.ending_time = null,
+        this.price_per_hour = 0,
+        this.is_private = null,
+        this.authorised_users = [],
+        this.id_user = 0,
+        this.room_url = ''
     }
-    */
-});
+}
 
-const room = mongoose.model("rooms", RoomSchema);
+const guardarRoom = function(db, room, colRooms) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db("studybuddies").collection(colRooms)
+            roomCollection.insertOne(room).then((result) => {
+                resolve()
+            })
+            .catch((err) => {
+                reject(err)
+            })
+        } 
+        catch(err) {
+            reject(err)
+        }
+    })
+}
 
 const getRooms = function (db, dbName) {
     return new Promise((resolve, reject) => {
@@ -45,6 +50,7 @@ const getRooms = function (db, dbName) {
 }
 
 module.exports = {
-    room,
-    getRooms
+    Room,
+    getRooms,
+    guardarRoom
 }
