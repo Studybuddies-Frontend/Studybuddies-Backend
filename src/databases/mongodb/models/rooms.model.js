@@ -34,23 +34,80 @@ const guardarRoom = function(db, room, colRooms) {
     })
 }
 
-const getRooms = function (db, dbName) {
-    return new Promise((resolve, reject) => {
-        try {
-            const roomsCollection = db.db(dbName).collection('rooms')
-            const document = roomsCollection.find().toArray(function (err, result) {
-                if (err) reject(err)
+const getRooms = function (db, fechaActual) {
+	return new Promise((resolve, reject) => {
+    
+		try {
+      
+			const roomCollection = db.db('studybuddies').collection('rooms');
+      
+			const query = {}
 
-                resolve(result)
-            })
-        } catch (err) {
-            reject(err)
-        }
-    })
+			//if (fechaActual){
+			//	query.fecha_fin = { $gte: fechaActual };
+            //}
+			const document = roomCollection.find().toArray(function (err, result) {
+        
+				if (err){ 
+                    reject(err)
+                }
+
+        
+				resolve(result);
+      
+			});
+    
+		} catch (err) {
+
+		      reject(err);
+    
+		}
+  
+	}
+)
+}
+
+const getRoomById = function (db, fechaActual, guid) {
+	return new Promise((resolve, reject) => {
+    
+		try {
+      
+			const roomCollection = db.db('studybuddies').collection('rooms');
+      
+			const query = {}
+
+      
+			//if (fechaActual){
+			//	query.fecha_fin = { $gte: fechaActual };
+            //}
+            if(guid){
+                query.guid = guid;
+            }
+			const document = roomCollection.find(query).toArray(function (err, result) {
+        
+				if (err){ 
+                    reject(err)
+                }
+
+        
+				resolve(result);
+      
+			});
+    
+		} catch (err) {
+
+		      reject(err);
+    
+		}
+  
+	}
+)
+
 }
 
 module.exports = {
     Room,
+    guardarRoom,
     getRooms,
-    guardarRoom
+    getRoomById
 }
