@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const parametros = require('../lib/configParameters')
-const mongoose =  require("mongoose");
+const mongodbManager =  require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
 const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
@@ -8,13 +8,9 @@ const mongodbRoom = require('../databases/mongodb/models/rooms.model')
 
 // conectar a la bbdd
 var mongoDB = "mongodb://127.0.0.1/studybuddies";
-mongoose.connect(mongoDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-  });
 
-const create = async function(req, res) {
+
+const createRoom = async function(req, res) {
     
     let nErrores = 0;
     let statusCode = 0;
@@ -28,9 +24,10 @@ const create = async function(req, res) {
     let ending_time = new Date();
     let price_per_hour = 0;
     let is_private = false;
+    let authorised_users = [];
     let id_user = "";
 
-    let room_url
+    let room_url;
     let domain = "";
     let options = {
         
@@ -65,6 +62,15 @@ const create = async function(req, res) {
         if(req.body.is_private) {
             is_private = req.body.is_private;
         }
+        if(req.body.authorised_users) {
+            authorised_users = req.body.authorised_users;
+            if(!is_private && authorised_users.length!=0){
+                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ');
+                statusCode = 400;
+                statusMessage = 'Form error';
+                nErrores++;
+            }
+        }
         if(req.body.id_user) {
             id_user = req.body.id_user;
         }
@@ -86,6 +92,7 @@ const create = async function(req, res) {
         ending_time : ending_time,
         price_per_hour : price_per_hour,
         is_private : is_private,
+        authorised_users : authorised_users,
         id_user : id_user,
         room_url : "meet.jit.si/studybuddies-"+id
         /*
@@ -111,10 +118,15 @@ const create = async function(req, res) {
         }
     }
 
-    // Crear room en BBDD
-    const room = await new mongodbRoom.room(roomBody);
-    room.save();
 
+    try {
+        await mongodbRoom.guardarRoom(conexionMongodb, roomBody, "rooms");
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
     // Cerramos la conexion mongo
     if (nErrores == 0) 
     {
@@ -237,8 +249,7 @@ const getById = async function(req, res) {
 
 
 module.exports = {
-    create,
+    createRoom,
     getAll,
     getById
-
 }
