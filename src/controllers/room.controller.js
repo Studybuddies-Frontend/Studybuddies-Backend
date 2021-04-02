@@ -65,7 +65,7 @@ const createRoom = async function(req, res) {
         if(req.body.authorised_users) {
             authorised_users = req.body.authorised_users;
             if(!is_private && authorised_users.length!=0){
-                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ' + err);
+                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ');
                 statusCode = 400;
                 statusMessage = 'Form error';
                 nErrores++;
