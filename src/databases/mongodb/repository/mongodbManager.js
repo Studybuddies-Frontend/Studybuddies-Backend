@@ -1,10 +1,10 @@
 const { MongoClient } = require('mongodb')
 
-const crearConexion = async function(user, password, dbName) {
+const crearConexion = async function(host, user, password, dbName) {
     return new Promise(async function(resolve, reject) {
         try {
-            const connStr = `mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false`;
-            //const connStr = `mongodb+srv://${user}:${password}@cluster0.p7sle.mongodb.net/${dbName}?retryWrites=true&w=majority&useUnifiedTopology=true`;
+            //const connStr = `mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20Compass%20Community&ssl=false`;
+            const connStr = `mongodb+srv://${user}:${password}@${host}/${dbName}?retryWrites=true&w=majority&useUnifiedTopology=true`;
             resolve(await MongoClient(connStr).connect());
         } catch(err) {
             reject()

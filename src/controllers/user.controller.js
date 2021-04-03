@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs')
 const parametros = require('../lib/configParameters')
+const tokenUtils = require('../lib/tokenUtils')
 
 const mysqlConnection = require('../databases/mysql/repository/mysqldbManager');
 const mysqlUser = require('../databases/mysql/models/user.model')
@@ -9,6 +10,7 @@ const login = async function(req, res) {
     let password = '';
     let role = '';
     let user = {};
+    let result = {};
     let nErrores = 0;
     let validPass = false;
     let statusCode = 0;
@@ -77,10 +79,14 @@ const login = async function(req, res) {
             statusMessage = 'Invalid Credentials';
             nErrores++;
         }
+        else {
+            result.username = username;
+            result.role = role; 
+        }
     }
 
     // Cerramos la conexion mysql
-    if (nErrores == 0) 
+    if (conexionMysql) 
     {
         await mysqlConnection.cerrarConexion(conexionMysql);
     }
@@ -89,10 +95,7 @@ const login = async function(req, res) {
     if (nErrores == 0) {
         console.log(`Login realizado correctamente para el usuario ${username}`)
         res.status(200)
-            .json({
-                username: username,
-                role: role
-            });
+            .json(result);
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');

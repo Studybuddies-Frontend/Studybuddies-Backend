@@ -1,13 +1,13 @@
 {
     "MySQL_DB": {
-        "host": "localhost",
+        "host": "bn6ajhexyiep7zzsyfcp-mysql.services.clever-cloud.com",
         "port": 3306,
-        "name": "studybuddies",
-        "username": "root",
-        "password": "$passw0rd123"
+        "name": "bn6ajhexyiep7zzsyfcp",
+        "username": "ukids7r1zpeuuqyf",
+        "password": "nptc7T1jY4ATWLmphs85"
     },
     "Mongo_DB": {
-        "host": "localhost",
+        "host": "cluster0.p7sle.mongodb.net",
         "port": "27017",
         "dbAdmin": "admin",
         "username": "admin",

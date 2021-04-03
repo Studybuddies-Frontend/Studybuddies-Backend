@@ -1,21 +1,12 @@
 const bcrypt = require('bcryptjs')
 const parametros = require('../lib/configParameters')
-const mongoose =  require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
 const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
 const mongodbRoom = require('../databases/mongodb/models/rooms.model')
 
-// conectar a la bbdd
-var mongoDB = "mongodb://127.0.0.1/studybuddies";
-mongoose.connect(mongoDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false
-  });
+const createRoom = async function (req, res) {
 
-const create = async function(req, res) {
-    
     let nErrores = 0;
     let statusCode = 0;
     let statusMessage = '';
@@ -24,48 +15,54 @@ const create = async function(req, res) {
     let university = "";
     let degree = "";
     let subject = "";
-    let starting_time = new Date();
-    let ending_time = new Date();
+    let starting_time = null;
+    let ending_time = null;
     let price_per_hour = 0;
     let is_private = false;
+    let authorised_users = [];
     let id_user = "";
 
-    let room_url
-    let domain = "";
-    let options = {
-        
-    };
+
 
     let conexionMongodb = {};
 
     let configuracion = parametros.configuracion();
 
-    if(req.body) {
-        if(req.body.description) {
+    if (req.body) {
+        if (req.body.description) {
             description = req.body.description;
         }
-        if(req.body.university) {
+        if (req.body.university) {
             university = req.body.university;
         }
-        if(req.body.degree) {
+        if (req.body.degree) {
             degree = req.body.degree;
         }
-        if(req.body.subject) {
+        if (req.body.subject) {
             subject = req.body.subject;
         }
-        if(req.body.starting_time) {
+        if (req.body.starting_time) {
             starting_time = req.body.starting_time;
         }
-        if(req.body.ending_time) {
+        if (req.body.ending_time) {
             ending_time = req.body.ending_time;
         }
-        if(req.body.price_per_hour) {
+        if (req.body.price_per_hour) {
             price_per_hour = req.body.price_per_hour;
         }
-        if(req.body.is_private) {
+        if (req.body.is_private) {
             is_private = req.body.is_private;
         }
-        if(req.body.id_user) {
+        if (req.body.authorised_users) {
+            authorised_users = req.body.authorised_users;
+            if (!is_private && authorised_users.length != 0) {
+                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ' + err);
+                statusCode = 400;
+                statusMessage = 'Form error';
+                nErrores++;
+            }
+        }
+        if (req.body.id_user) {
             id_user = req.body.id_user;
         }
 
@@ -74,35 +71,13 @@ const create = async function(req, res) {
     // Los datos vienen comprobados del front??
 
     // Generar room db
-    const id = uuidv4();
-
-    const roomBody = {
-        guid : id,
-        description: description,
-        university : university,
-        degree : degree,
-        subject : subject,
-        starting_time : starting_time,
-        ending_time : ending_time,
-        price_per_hour : price_per_hour,
-        is_private : is_private,
-        id_user : id_user,
-        room_url : "meet.jit.si/studybuddies-"+id
-        /*
-        domain : "meet.jit.si",
-        options : {
-            roomName : "studybuddies-"+id,
-            width : 700,
-            height: 700,
-            parentNode: "document.querySelector('#meet')"
-        }
-        */
-    };
+    let guid = uuidv4();
+    let room_url = "meet.jit.si/studybuddies-" + guid
 
     //creo la conexion a la base de datos mongodb
     if (nErrores == 0) {
         try {
-            conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+            conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
         } catch (err) {
             console.log('Error al crear la conexion con mongodb. ' + err);
             statusCode = 500;
@@ -111,20 +86,43 @@ const create = async function(req, res) {
         }
     }
 
-    // Crear room en BBDD
-    const room = await new mongodbRoom.room(roomBody);
-    room.save();
+    if (nErrores == 0) {
 
+
+        let room = new mongodbRoom.Room()
+        room.guid = guid;
+        room.description = description
+        room.university = university;
+        room.degree = degree;
+        room.subject = subject;
+        room.starting_time = starting_time;
+        room.ending_time = ending_time;
+        room.price_per_hour = price_per_hour;
+        room.is_private = is_private;
+        room.authorised_users = authorised_users;
+        room.id_user = id_user;
+        room.room_url = room_url;
+
+        try {
+            await mongodbRoom.guardarRoom(conexionMongodb, room, "rooms");
+        } catch (err) {
+            console.log(`Error al añadir la room para el usuario: ${id_user}` + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
     // Cerramos la conexion mongo
-    if (nErrores == 0) 
-    {
+    if (conexionMongodb) {
         await mongodbConnection.cerrarConexion(conexionMongodb);
     }
 
     // Devolvemos la respuesta
     if (nErrores == 0) {
         console.log(`Room creada correctamente`);
-        res.status(200).json({roomBody});
+        res.status(200).json({ 
+            id_room: guid
+         });
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');
@@ -132,7 +130,7 @@ const create = async function(req, res) {
 
 }
 
-const getAll = async function(req, res) {
+const getAll = async function (req, res) {
 
     let nErrores = 0;
     let allRoom = {};
@@ -142,7 +140,7 @@ const getAll = async function(req, res) {
     let configuracion = parametros.configuracion();
 
     try {
-        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
     } catch (err) {
         console.log('Error al crear la conexion con mongodb. ' + err);
         statusCode = 500;
@@ -152,36 +150,35 @@ const getAll = async function(req, res) {
 
     let now = new Date();
 
-    if(nErrores == 0) {
+    if (nErrores == 0) {
         try {
             allRoom = await new mongodbRoom.getRooms(conexionMongodb, now.getTime());
         }
-        catch(err) {
+        catch (err) {
             console.log(`Error al conectar con el servidor.`);
             statusCode = 500;
             nErrores++;
         }
     }
- 
-    if (nErrores == 0) 
-    {
-    await mongodbConnection.cerrarConexion(conexionMongodb);
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
     }
 
     if (nErrores == 0) {
         console.log(`Salas obtenidas con éxito`)
         res.status(200)
             .json({
-                allRoom:allRoom
+                allRoom: allRoom
             });
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');
-    }  
+    }
 
 }
 
-const getById = async function(req, res) {
+const getById = async function (req, res) {
 
     let nErrores = 0;
     let room = {};
@@ -191,7 +188,7 @@ const getById = async function(req, res) {
     let configuracion = parametros.configuracion();
 
     try {
-        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
     } catch (err) {
         console.log('Error al crear la conexion con mongodb. ' + err);
         statusCode = 500;
@@ -201,7 +198,7 @@ const getById = async function(req, res) {
 
     let now = new Date();
 
-    if(nErrores == 0) {
+    if (nErrores == 0) {
         try {
             room = await new mongodbRoom.getRoomById(conexionMongodb, now.getTime(), req.params.guid);
             if (!room) {
@@ -210,34 +207,33 @@ const getById = async function(req, res) {
                 nErrores++;
             }
         }
-        catch(err) {
+        catch (err) {
             console.log(`Error al obtener la sala.`);
             statusCode = 500;
             nErrores++;
         }
     }
- 
-    if (nErrores == 0) 
-    {
-    await mongodbConnection.cerrarConexion(conexionMongodb);
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
     }
 
     if (nErrores == 0) {
         console.log(`Sala obtenida con éxito`)
         res.status(200)
             .json({
-                room:room
+                room: room
             });
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');
-    }  
+    }
 
 }
 
 
 module.exports = {
-    create,
+    createRoom,
     getAll,
     getById
 
