@@ -5,8 +5,8 @@ const { v4: uuidv4 } = require("uuid");
 const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
 const mongodbRoom = require('../databases/mongodb/models/rooms.model')
 
-const createRoom = async function (req, res) {
 
+const createRoom = async function (req, res) {
     let nErrores = 0;
     let statusCode = 0;
     let statusMessage = '';
@@ -21,8 +21,6 @@ const createRoom = async function (req, res) {
     let is_private = false;
     let authorised_users = [];
     let id_user = "";
-
-
 
     let conexionMongodb = {};
 
@@ -74,6 +72,7 @@ const createRoom = async function (req, res) {
     let guid = uuidv4();
     let room_url = "meet.jit.si/studybuddies-" + guid
 
+
     //creo la conexion a la base de datos mongodb
     if (nErrores == 0) {
         try {
@@ -85,6 +84,7 @@ const createRoom = async function (req, res) {
             nErrores++;
         }
     }
+
 
     if (nErrores == 0) {
 
@@ -332,5 +332,6 @@ module.exports = {
     getById,
     getSalasEstudioActivas,
     getTutoriasActivas
+
 
 }

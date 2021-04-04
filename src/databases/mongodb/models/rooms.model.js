@@ -139,5 +139,4 @@ module.exports = {
     getRoomById,
     getSalasEstudioActivas,
     getTutoriasActivas
-
 }
