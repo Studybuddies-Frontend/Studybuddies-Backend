@@ -7,7 +7,7 @@
         "password": "$passw0rd123"
     },
     "Mongo_DB": {
-        "host": "127.0.0.1",
+        "host": "cluster0.p7sle.mongodb.net",
         "port": "27017",
         "dbAdmin": "admin",
         "username": "admin",
@@ -18,6 +18,5 @@
         "host": "0.0.0.0",
         "port": 3000
     },
-    "Origins_Allowed": ["http://localhost:4200"],
-    "LOG_LEVEL": "info"
+    "Origins_Allowed": ["http://localhost:4200"]
 }
