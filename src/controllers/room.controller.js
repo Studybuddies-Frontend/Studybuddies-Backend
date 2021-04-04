@@ -120,9 +120,9 @@ const createRoom = async function (req, res) {
     // Devolvemos la respuesta
     if (nErrores == 0) {
         console.log(`Room creada correctamente`);
-        res.status(200).json({ 
+        res.status(200).json({
             id_room: guid
-         });
+        });
     } else {
         console.log(statusMessage);
         res.status(statusCode || 500).send(statusMessage || 'General Error');
@@ -176,6 +176,100 @@ const getAll = async function (req, res) {
         res.status(statusCode || 500).send(statusMessage || 'General Error');
     }
 
+}
+
+const getSalasEstudioActivas = async function (req, res) {
+
+    let nErrores = 0;
+    let salasEstudio = {};
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+    let now = new Date();
+
+    if (nErrores == 0) {
+        try {
+            salasEstudio = await new mongodbRoom.getSalasEstudioActivas(conexionMongodb, now.getTime());
+        }
+        catch (err) {
+            console.log(`Error al conectar con el servidor.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Salas obtenidas con éxito`)
+        res.status(200)
+            .json({
+                salasEstudio: salasEstudio
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
+}
+
+const getTutoriasActivas = async function (req, res) {
+
+    let nErrores = 0;
+    let tutorias = {};
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+    let now = new Date();
+
+    if (nErrores == 0) {
+        try {
+            tutorias = await new mongodbRoom.getTutoriasActivas(conexionMongodb, now.getTime());
+        }
+        catch (err) {
+            console.log(`Error al conectar con el servidor.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Salas obtenidas con éxito`)
+        res.status(200)
+            .json({
+                tutorias: tutorias
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
 }
 
 const getById = async function (req, res) {
@@ -235,6 +329,8 @@ const getById = async function (req, res) {
 module.exports = {
     createRoom,
     getAll,
-    getById
+    getById,
+    getSalasEstudioActivas,
+    getTutoriasActivas
 
 }
