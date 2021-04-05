@@ -28,6 +28,7 @@ const createRoom = async function (req, res) {
     let conexionMongodb = {};
 
     let configuracion = parametros.configuracion();
+    let actualDate = new Date();
 
     if (req.body) {
         if (req.body.description) {
@@ -48,11 +49,17 @@ const createRoom = async function (req, res) {
         if (req.body.ending_time) {
             ending_time = new Date(req.body.ending_time);
         }
-        if(!(ending_time>starting_time)){
-            console.log('Error. No se puede crear una sala con fecha de fin menor que la fecha de inicio. ');
-                statusCode = 400;
-                statusMessage = 'Form error';
-                nErrores++;
+        if(starting_time.getFullYear < actualDate.getFullYear() || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth < actualDate.getMonth()+1 || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth == actualDate.getMonth()+1 && starting_time.getDate < actualDate.getDate()){
+            console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
+            statusCode = 400;
+            statusMessage = 'Form error';
+            nErrores++;
+        }
+        if(!((ending_time.getHours() > starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() >= starting_time.getMinutes()))){
+            console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
+            statusCode = 400;
+            statusMessage = 'Form error';
+            nErrores++;
         }
         if (req.body.price_per_hour) {
             price_per_hour = req.body.price_per_hour;
