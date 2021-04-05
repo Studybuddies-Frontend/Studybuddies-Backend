@@ -1,7 +1,8 @@
 //Obtener usuarios por su USERNAME
 const getByUsername = (db, username) => {
     return new Promise((resolve, reject) => {
-        let query = `SELECT u.username,
+        let query = `SELECT u.id,
+                            u.username,
                             u.password,
                             u.nombre,
                             u.apellidos,
