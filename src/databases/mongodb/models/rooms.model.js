@@ -9,6 +9,9 @@ class Room {
             this.ending_time = null,
             this.price_per_hour = 0,
             this.is_private = null,
+            this.date = '',
+            this.iTime = '',
+            this.fTime = '',
             this.authorised_users = [],
             this.id_user = 0,
             this.room_url = ''

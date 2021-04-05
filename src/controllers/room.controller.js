@@ -19,12 +19,16 @@ const createRoom = async function (req, res) {
     let ending_time = null;
     let price_per_hour = 0;
     let is_private = false;
+    let date = "";
+    let iTime = "";
+    let fTime = "";
     let authorised_users = [];
     let id_user = "";
 
     let conexionMongodb = {};
 
     let configuracion = parametros.configuracion();
+    let actualDate = new Date();
 
     if (req.body) {
         if (req.body.description) {
@@ -40,10 +44,22 @@ const createRoom = async function (req, res) {
             subject = req.body.subject;
         }
         if (req.body.starting_time) {
-            starting_time = req.body.starting_time;
+            starting_time = new Date(req.body.starting_time);
         }
         if (req.body.ending_time) {
-            ending_time = req.body.ending_time;
+            ending_time = new Date(req.body.ending_time);
+        }
+        if(starting_time.getFullYear < actualDate.getFullYear() || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth < actualDate.getMonth()+1 || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth == actualDate.getMonth()+1 && starting_time.getDate < actualDate.getDate()){
+            console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
+            statusCode = 400;
+            statusMessage = 'Form error';
+            nErrores++;
+        }
+        if(!((ending_time.getHours() > starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() >= starting_time.getMinutes()))){
+            console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
+            statusCode = 400;
+            statusMessage = 'Form error';
+            nErrores++;
         }
         if (req.body.price_per_hour) {
             price_per_hour = req.body.price_per_hour;
@@ -51,10 +67,19 @@ const createRoom = async function (req, res) {
         if (req.body.is_private) {
             is_private = req.body.is_private;
         }
+        if (req.body.date) {
+            date = req.body.date;
+        }
+        if (req.body.iTime) {
+            iTime = req.body.iTime;
+        }
+        if (req.body.fTime) {
+            fTime = req.body.fTime;
+        }
         if (req.body.authorised_users) {
             authorised_users = req.body.authorised_users;
-            if (!is_private && authorised_users.length != 0) {
-                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ' + err);
+            if (!req.body.is_private && req.body.authorised_users.length != 0) {
+                console.log('Error. No se puede crear una sala no privada y añadir gente autorizada. ');
                 statusCode = 400;
                 statusMessage = 'Form error';
                 nErrores++;
@@ -99,6 +124,9 @@ const createRoom = async function (req, res) {
         room.ending_time = ending_time;
         room.price_per_hour = price_per_hour;
         room.is_private = is_private;
+        room.date = date;
+        room.iTime = iTime;
+        room.fTime = fTime;
         room.authorised_users = authorised_users;
         room.id_user = id_user;
         room.room_url = room_url;
