@@ -1,0 +1,54 @@
+project:
+  name: 'Studybuddies'
+  owner: 'sanmargom2'
+  teamId: '18'
+  identities:
+    heroku:
+      url: 
+    travis:
+      url: 'https://travis-ci.com/github/Team-Studybuddies/Studybuddies-Backend'
+  members:
+    member1:
+      name: 'Santiago'
+      surname: 'Martin' 
+      githubUsername: 'sanmargom2'
+    member2:
+      name: 'Marta'
+      surname: 'Perea' 
+      githubUsername: 'marperoli2'
+    member3:
+      name: 'Alejandro'
+      surname: 'Molina' 
+      githubUsername: 'alejandromol98'
+    member4:
+      name: 'Álvaro'
+      surname: 'Díaz' 
+      githubUsername: 'alvdiaasc97'
+    member5:
+      name: 'David'
+      surname: 'Toro' 
+      githubUsername: 'davtorcue'
+    member6:
+      name: 'Carlos Jesús'
+      surname: 'Vida' 
+      githubUsername: 'makislayer'
+    member7:
+      name: 'José'
+      surname: 'Peñuela' 
+      githubUsername: 'jospearui'
+    member8:
+      name: 'Miguel Emmanuel'
+      surname: 'Saavedra' 
+      githubUsername: 'migsaagom'
+    member9:
+      name: 'Antonio'
+      surname: 'Martínez' 
+      githubUsername: 'antmarcab4'
+    member10:
+      name: 'Alonso'
+      surname: 'Rodríguez' 
+      githubUsername: 'alorodlla'
+    member11:
+      name: 'Pedro'
+      surname: 'Padilla' 
+      githubUsername: 'PPadilla99'
