@@ -3,8 +3,6 @@ project:
   owner: 'sanmargom2'
   teamId: '18'
   identities:
-    heroku:
-      url: 
     travis:
       url: 'https://travis-ci.com/github/Team-Studybuddies/Studybuddies-Backend'
   members:
