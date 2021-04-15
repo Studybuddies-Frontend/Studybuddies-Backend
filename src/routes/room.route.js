@@ -7,6 +7,7 @@ router.get('/:guid', roomController.getById);
 router.get('/student/all', roomController.getSalasEstudioActivas)
 router.get('/tutor/all', roomController.getTutoriasActivas)
 router.get('/mine/:id', roomController.getMisSalas);
+router.get('/Tmine/:id', roomController.getMisTutorias);
 
 
 module.exports = router;

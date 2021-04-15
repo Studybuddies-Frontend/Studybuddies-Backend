@@ -350,6 +350,53 @@ const getMisSalas = async function (req, res) {
     }
 }
 
+const getMisTutorias = async function (req, res) {
+
+    let nErrores = 0;
+    let salasEstudio = {};
+    let id= req.params.id;
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+
+    if (nErrores == 0) {
+        try {
+            salasEstudio = await new mongodbRoom.getMisTutorias(conexionMongodb, id);
+        }
+        catch (err) {
+            console.log(`Error al conectar con el servidor.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Mis tutorias obtenidas con éxito`)
+        res.status(200)
+            .json({
+                salasEstudio: salasEstudio
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
+}
+
 const getById = async function (req, res) {
 
     let nErrores = 0;
@@ -410,7 +457,8 @@ module.exports = {
     getById,
     getSalasEstudioActivas,
     getTutoriasActivas,
-    getMisSalas
+    getMisSalas,
+    getMisTutorias
 
 
 }
