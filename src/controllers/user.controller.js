@@ -15,6 +15,7 @@ const login = async function (req, res) {
     let validPass = false;
     let statusCode = 0;
     let statusMessage = '';
+    let id = null;
 
     let conexionMysql = {};
 
@@ -73,6 +74,7 @@ const login = async function (req, res) {
     // Comprobamos que la contraseña coincide
     if (nErrores == 0) {
         role = user.role
+        id = user.id
         validPass = await bcrypt.compare(password, user.password)
         if (!validPass) {
             statusCode = 401;
@@ -82,6 +84,7 @@ const login = async function (req, res) {
         else {
             result.username = username;
             result.role = role;
+            result.id = id
         }
     }
 
