@@ -192,6 +192,16 @@ const registerAlumno = async function (req, res) {
         statusMessage = 'No se ha proporcionado un email';
         nErrores++;
     }
+    if (!email) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un email';
+        nErrores++;
+    }
+    if (!email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un email válido';
+        nErrores++;
+    }
     if (!universidad) {
         statusCode = 400;
         statusMessage = 'No se ha proporcionado una universidad';
@@ -221,7 +231,7 @@ const registerAlumno = async function (req, res) {
         try {
             userExiste = await mysqlUser.getByUsername(conexionMysql, username)
             if (userExiste) {
-                statusCode = 400;
+                statusCode = 200;
                 statusMessage = 'Este nombre de usuario ya existe';
                 nErrores++;
             }
@@ -230,14 +240,14 @@ const registerAlumno = async function (req, res) {
                 try {
                     userExiste = await mysqlUser.getByEmail(conexionMysql, email)
                     if (userExiste) {
-                        statusCode = 400;
+                        statusCode = 200;
                         statusMessage = 'Este email ya existe';
                         nErrores++;
                     }
                     else {
                         // Comprobamos que las contraseñas coinciden
                         if (password != confirmPassword) {
-                            statusCode = 400;
+                            statusCode = 200;
                             statusMessage = 'Las contraseñas deben coincidir';
                             nErrores++;
                         }
@@ -302,7 +312,9 @@ const registerAlumno = async function (req, res) {
             });
     } else {
         console.log(statusMessage);
-        res.status(statusCode || 500).send(statusMessage || 'General Error');
+        res.status(statusCode || 500).json({
+            result: 0,
+            mensaje: statusMessage || 'General Error'});
     }
 
 }
@@ -391,6 +403,11 @@ const registerTutor = async function (req, res) {
         statusMessage = 'No se ha proporcionado un email';
         nErrores++;
     }
+    if (!email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un email válido';
+        nErrores++;
+    }
     if (!universidad) {
         statusCode = 400;
         statusMessage = 'No se ha proporcionado una universidad';
@@ -426,7 +443,7 @@ const registerTutor = async function (req, res) {
         try {
             userExiste = await mysqlUser.getByUsername(conexionMysql, username)
             if (userExiste) {
-                statusCode = 400;
+                statusCode = 200;
                 statusMessage = 'Este nombre de usuario ya existe';
                 nErrores++;
             }
@@ -435,14 +452,14 @@ const registerTutor = async function (req, res) {
                 try {
                     userExiste = await mysqlUser.getByEmail(conexionMysql, email)
                     if (userExiste) {
-                        statusCode = 400;
+                        statusCode = 200;
                         statusMessage = 'Este email ya existe';
                         nErrores++;
                     }
                     else {
                         // Comprobamos que las contraseñas coinciden
                         if (password != confirmPassword) {
-                            statusCode = 400;
+                            statusCode = 200;
                             statusMessage = 'Las contraseñas deben coincidir';
                             nErrores++;
                         }
@@ -507,7 +524,9 @@ const registerTutor = async function (req, res) {
             });
     } else {
         console.log(statusMessage);
-        res.status(statusCode || 500).send(statusMessage || 'General Error');
+        res.status(statusCode || 500).json({
+            result: 0,
+            mensaje: statusMessage || 'General Error'});
     }
 
 }
