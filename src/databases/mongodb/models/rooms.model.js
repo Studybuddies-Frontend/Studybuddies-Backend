@@ -1,3 +1,5 @@
+const moment = require('moment')
+
 class Room {
     constructor() {
         this.guid = '',
@@ -35,7 +37,7 @@ const guardarRoom = function (db, room, colRooms) {
     })
 }
 
-const getRooms = function (db, fechaActual) {
+const getRooms = function (db) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
@@ -61,9 +63,14 @@ const getSalasEstudioActivas = function (db, fechaActual) {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: false}
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+
+
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -82,9 +89,14 @@ const getTutoriasActivas = function (db, fechaActual) {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true}
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+
+
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -107,9 +119,15 @@ const getRoomById = function (db, fechaActual, guid) {
             const query = {}
 
 
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+
+
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
+
             if (guid) {
                 query.guid = guid;
             }
