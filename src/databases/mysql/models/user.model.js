@@ -18,6 +18,8 @@ const getByUsername = (db, username) => {
     })
 }
 
+const getByEmail = (db, email) => {
+
 const getById = (db, id) => {
     return new Promise((resolve, reject) => {
         let query = `SELECT u.id,
@@ -26,6 +28,12 @@ const getById = (db, id) => {
                             u.nombre,
                             u.apellidos,
                             u.email,
+                            roles.rol as role
+        FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
+        WHERE u.email = ?`;
+
+        db.query(query, [email], (err, rows) => {
+
                             u.universidad,
                             u.grado,
                             u.descripcion,
@@ -40,7 +48,23 @@ const getById = (db, id) => {
     })
 }
 
+const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole}) => {
+    return new Promise((resolve, reject) => {
+        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole];
+        let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?)'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
 module.exports = {
     getByUsername,
+    getByEmail,
+    saveUsuario,
     getById
 }
