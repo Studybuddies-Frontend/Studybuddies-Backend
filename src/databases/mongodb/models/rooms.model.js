@@ -152,7 +152,7 @@ const getMisTutorias = function (db, id) {
     )
 }
 
-const getRoomById = function (db, fechaActual, guid) {
+const getRoomById = function (db, guid) {
     return new Promise((resolve, reject) => {
 
         try {
@@ -264,8 +264,9 @@ const getAsignaturasByTutor = function (db, idTutor) {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true };
             if (idTutor) {
-                query.id_user = idTutor
+                query.id_user = parseInt(idTutor)
             }
+            console.log(query)
             const document = roomCollection.distinct('subject', query)
             resolve(document)
         } catch (err) {
