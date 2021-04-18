@@ -135,6 +135,23 @@ const getRoomById = function (db, fechaActual, guid) {
 
 }
 
+
+const getAsignaturasByTutor = function(db, idTutor) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { is_private: true };
+            if(idTutor) {
+                query.id_user = idTutor
+            }
+            const document = roomCollection.distinct('subject', query)
+            resolve(document)
+          } catch (err) {
+            reject(err);
+        }
+    })
+}
+
 const updateRoom = function (db, idRoom, listaAutorizados, colRooms) {
     return new Promise((resolve, reject) => {
         try {
@@ -204,6 +221,7 @@ module.exports = {
     getRoomById,
     getSalasEstudioActivas,
     getTutoriasActivas,
+    getAsignaturasByTutor
     updateRoom,
     getSalasEstudioActivasById,
     getTutoriasActivasById
