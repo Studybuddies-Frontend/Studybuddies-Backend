@@ -83,8 +83,9 @@ const login = async function (req, res) {
         }
         else {
             result.username = username;
-            result.role = role;
-            result.id = id
+            result.role = role; 
+            result.id = id;
+
         }
     }
 

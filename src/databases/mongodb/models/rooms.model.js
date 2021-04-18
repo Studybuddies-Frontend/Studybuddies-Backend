@@ -109,6 +109,48 @@ const getTutoriasActivas = function (db, fechaActual) {
         }
     })
 }
+const getMisSalas = function (db, id) {
+    return new Promise((resolve, reject) => {
+        try {
+            const idNumber = parseInt(id)
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { id_user: idNumber};
+
+            const document = roomCollection.find(query).toArray(function (err, result) {
+                if (err) {
+                    reject(err)
+                }
+                
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    }
+    )
+}
+
+const getMisTutorias = function (db, id) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const idNumber = parseInt(id);
+            const query = {authorised_users: idNumber};
+            console.log(query);
+
+            const document = roomCollection.find(query).toArray(function (err, result) {
+                if (err) {
+                    reject(err)
+                }
+                
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    }
+    )
+}
 
 const getRoomById = function (db, fechaActual, guid) {
     return new Promise((resolve, reject) => {
@@ -240,6 +282,8 @@ module.exports = {
     getRoomById,
     getSalasEstudioActivas,
     getTutoriasActivas,
+    getMisSalas,
+    getMisTutorias,
     updateRoom,
     getSalasEstudioActivasById,
     getTutoriasActivasById,
