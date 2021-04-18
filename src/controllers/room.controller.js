@@ -228,11 +228,11 @@ const getSalasEstudioActivas = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+    
 
     if (nErrores == 0) {
         try {
-            salasEstudio = await new mongodbRoom.getSalasEstudioActivas(conexionMongodb, now.getTime());
+            salasEstudio = await new mongodbRoom.getSalasEstudioActivas(conexionMongodb);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -277,11 +277,10 @@ const getTutoriasActivas = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
 
     if (nErrores == 0) {
         try {
-            tutorias = await new mongodbRoom.getTutoriasActivas(conexionMongodb, now.getTime());
+            tutorias = await new mongodbRoom.getTutoriasActivas(conexionMongodb);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -326,11 +325,11 @@ const getById = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+
 
     if (nErrores == 0) {
         try {
-            room = await new mongodbRoom.getRoomById(conexionMongodb, now.getTime(), req.params.guid);
+            room = await new mongodbRoom.getRoomById(conexionMongodb, req.params.guid);
             if (!room) {
                 statusCode = 401;
                 statusMessage = 'Invalid Credentials';
