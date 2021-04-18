@@ -191,6 +191,17 @@ const getTutoriasActivasById = function (db, fechaActual, guid) {
                 }
                 resolve(result);
             });
+
+const getAsignaturasByTutor = function(db, idTutor) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { is_private: true };
+            if(idTutor) {
+                query.id_user = idTutor
+            }
+            const document = roomCollection.distinct('subject', query)
+            resolve(document)
         } catch (err) {
             reject(err);
         }
@@ -206,5 +217,6 @@ module.exports = {
     getTutoriasActivas,
     updateRoom,
     getSalasEstudioActivasById,
-    getTutoriasActivasById
+    getTutoriasActivasById,
+    getAsignaturasByTutor
 }

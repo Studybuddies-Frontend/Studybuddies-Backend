@@ -15,8 +15,8 @@
         "name": "studybuddies"
     },
     "Launch_App": {
-        "host": "46.101.34.232",
-        "port": 1740
+        "host": "0.0.0.0",
+        "port": 3000
     },
     "Origins_Allowed": ["http://localhost:4200"]
 }
