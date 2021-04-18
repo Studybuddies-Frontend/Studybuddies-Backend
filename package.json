@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon api-studdybuddies-backend.js"
+
   },
   "author": "",
   "license": "ISC",

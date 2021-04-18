@@ -19,6 +19,8 @@ const getByUsername = (db, username) => {
 }
 
 const getByEmail = (db, email) => {
+
+const getById = (db, id) => {
     return new Promise((resolve, reject) => {
         let query = `SELECT u.id,
                             u.username,
@@ -31,6 +33,15 @@ const getByEmail = (db, email) => {
         WHERE u.email = ?`;
 
         db.query(query, [email], (err, rows) => {
+
+                            u.universidad,
+                            u.grado,
+                            u.descripcion,
+                            roles.rol as role
+        FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
+        WHERE u.id = ?`;
+
+        db.query(query, [id], (err, rows) => {
             if (err) reject(err)
             resolve(rows[0])
         })
@@ -54,5 +65,6 @@ const saveUsuario = (db, {username, password, nombre, apellidos, email, universi
 module.exports = {
     getByUsername,
     getByEmail,
-    saveUsuario
+    saveUsuario,
+    getById
 }
