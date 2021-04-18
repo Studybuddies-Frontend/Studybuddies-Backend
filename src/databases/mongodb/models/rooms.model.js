@@ -81,7 +81,7 @@ const getTutoriasActivas = function (db, fechaActual) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { is_private: true}
+            const query = { is_private: true }
             //if (fechaActual){
             //	query.fecha_fin = { $gte: fechaActual };
             //}
@@ -135,31 +135,14 @@ const getRoomById = function (db, fechaActual, guid) {
 
 }
 
-
-const getAsignaturasByTutor = function(db, idTutor) {
-    return new Promise((resolve, reject) => {
-        try {
-            const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { is_private: true };
-            if(idTutor) {
-                query.id_user = idTutor
-            }
-            const document = roomCollection.distinct('subject', query)
-            resolve(document)
-          } catch (err) {
-            reject(err);
-        }
-    })
-}
-
 const updateRoom = function (db, idRoom, listaAutorizados, colRooms) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db("studybuddies").collection(colRooms)
-            roomCollection.updateOne( { "guid" : idRoom },
-            { $set: { "authorised_users" : listaAutorizados } }).then((result) => {
-                resolve()
-            })
+            roomCollection.updateOne({ "guid": idRoom },
+                { $set: { "authorised_users": listaAutorizados } }).then((result) => {
+                    resolve()
+                })
                 .catch((err) => {
                     reject(err)
                 })
@@ -175,7 +158,7 @@ const getSalasEstudioActivasById = function (db, fechaActual, guid) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { is_private: false, guid: guid}
+            const query = { is_private: false, guid: guid }
             //if (fechaActual){
             //	query.fecha_fin = { $gte: fechaActual };
             //}
@@ -198,7 +181,7 @@ const getTutoriasActivasById = function (db, fechaActual, guid) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { is_private: true, guid: guid}
+            const query = { is_private: true, guid: guid }
             //if (fechaActual){
             //	query.fecha_fin = { $gte: fechaActual };
             //}
@@ -214,6 +197,23 @@ const getTutoriasActivasById = function (db, fechaActual, guid) {
     })
 }
 
+const getAsignaturasByTutor = function (db, idTutor) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { is_private: true };
+            if (idTutor) {
+                query.id_user = idTutor
+            }
+            const document = roomCollection.distinct('subject', query)
+            resolve(document)
+        } catch (err) {
+            reject(err);
+        }
+    })
+}
+
+
 module.exports = {
     Room,
     guardarRoom,
@@ -221,8 +221,8 @@ module.exports = {
     getRoomById,
     getSalasEstudioActivas,
     getTutoriasActivas,
-    getAsignaturasByTutor
     updateRoom,
     getSalasEstudioActivasById,
-    getTutoriasActivasById
+    getTutoriasActivasById,
+    getAsignaturasByTutor
 }

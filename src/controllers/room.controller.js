@@ -570,7 +570,7 @@ module.exports = {
     getById,
     getSalasEstudioActivas,
     getTutoriasActivas,
-    getAsignaturasByTutor
+    getAsignaturasByTutor,
     anadirAutorizados,
     getSalasEstudioActivasById,
     getTutoriasActivasById
