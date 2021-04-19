@@ -32,12 +32,7 @@ const guardarRoom = function (db, room, colRooms) {
             room.ending_time.setHours( room.ending_time.getHours() + 2 );
 
             //Añadimos las comisiones:
-
-            //Para añadir el porcentaje antes de añadir los 50 cents:
-            //room.price_per_hour += room.price_per_hour*0.1;
             room.price_per_hour = room.price_per_hour + 0.50;
-            //Para añadir el porcentaje después de añadir los 50 cents:
-            //room.price_per_hour += room.price_per_hour*0.1;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
@@ -69,14 +64,14 @@ const getRooms = function (db) {
     )
 }
 
-const getSalasEstudioActivas = function (db, fechaActual) {
+const getSalasEstudioActivas = function (db) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: false}
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
-            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
 
 
             if (fecha){
@@ -95,14 +90,14 @@ const getSalasEstudioActivas = function (db, fechaActual) {
     )
 }
 
-const getTutoriasActivas = function (db, fechaActual) {
+const getTutoriasActivas = function (db) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true}
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
-            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
 
 
             if (fecha){
@@ -120,12 +115,19 @@ const getTutoriasActivas = function (db, fechaActual) {
         }
     })
 }
+
 const getMisSalas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
             const idNumber = parseInt(id)
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { id_user: idNumber};
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
 
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
@@ -141,13 +143,18 @@ const getMisSalas = function (db, id) {
     )
 }
 
-const getMisTutorias = function (db, id) {
+const getMisTutoriasPagadas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const idNumber = parseInt(id);
             const query = {authorised_users: idNumber};
-            console.log(query);
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
 
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
@@ -175,7 +182,7 @@ const getRoomById = function (db, guid) {
 
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
-            let fecha = moment(fechaActual).format("YYYY-MM-DDThh:mm:ss");
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
 
 
             if (fecha){
@@ -226,11 +233,19 @@ const updateRoom = function (db, idRoom, listaAutorizados, colRooms) {
     })
 }
 
-const getSalasEstudioActivasById = function (db, fechaActual, guid) {
+const getSalasEstudioActivasById = function (db, guid) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: false, guid: guid }
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+
+
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -244,11 +259,19 @@ const getSalasEstudioActivasById = function (db, fechaActual, guid) {
     )
 }
 
-const getTutoriasActivasById = function (db, fechaActual, guid) {
+const getTutoriasActivasById = function (db, guid) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true, guid: guid }
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+
+
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -287,7 +310,7 @@ module.exports = {
     getSalasEstudioActivas,
     getTutoriasActivas,
     getMisSalas,
-    getMisTutorias,
+    getMisTutoriasPagadas,
     updateRoom,
     getSalasEstudioActivasById,
     getTutoriasActivasById,

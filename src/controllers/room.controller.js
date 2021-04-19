@@ -352,7 +352,7 @@ const getMisSalas = async function (req, res) {
     }
 }
 
-const getMisTutorias = async function (req, res) {
+const getMisTutoriasPagadas = async function (req, res) {
 
     let nErrores = 0;
     let salasEstudio = {};
@@ -374,7 +374,7 @@ const getMisTutorias = async function (req, res) {
 
     if (nErrores == 0) {
         try {
-            salasEstudio = await new mongodbRoom.getMisTutorias(conexionMongodb, id);
+            salasEstudio = await new mongodbRoom.getMisTutoriasPagadas(conexionMongodb, id);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -528,11 +528,11 @@ const getSalasEstudioActivasById = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+
 
     if (nErrores == 0) {
         try {
-            salasEstudio = await new mongodbRoom.getSalasEstudioActivasById(conexionMongodb, now.getTime(),req.params.guid);
+            salasEstudio = await new mongodbRoom.getSalasEstudioActivasById(conexionMongodb, req.params.guid);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -575,11 +575,11 @@ const getTutoriasActivasById = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+
 
     if (nErrores == 0) {
         try {
-            tutorias = await new mongodbRoom.getTutoriasActivasById(conexionMongodb, now.getTime(), req.params.guid);
+            tutorias = await new mongodbRoom.getTutoriasActivasById(conexionMongodb, req.params.guid);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -664,7 +664,7 @@ module.exports = {
     getSalasEstudioActivas,
     getTutoriasActivas,
     getMisSalas,
-    getMisTutorias,
+    getMisTutoriasPagadas,
     getAsignaturasByTutor,
     anadirAutorizados,
     getSalasEstudioActivasById,
