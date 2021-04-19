@@ -476,11 +476,9 @@ const anadirAutorizados = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
-
     if (nErrores == 0) {
         try {
-            room = await new mongodbRoom.getRoomById(conexionMongodb, now.getTime(), req.body.guid);
+            room = await new mongodbRoom.getRoomById(conexionMongodb, req.body.guid);
             if(room[0].authorised_users.includes(req.body.id_user)){
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
