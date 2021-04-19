@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node api-studdybuddies-backend.js"
-  
-    
+    "start": "nodemon api-studdybuddies-backend.js"
   },
   "author": "",
   "license": "ISC",

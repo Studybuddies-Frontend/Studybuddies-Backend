@@ -5,6 +5,7 @@ const parametros = require('./src/lib/configParameters');
 
 const userRoute = require('./src/routes/user.route');
 const roomRoute = require('./src/routes/room.route');
+const tutorRoute = require('./src/routes/tutor.route');
 
 // Cargamos la informacion de los ficheros de configuracion
 parametros.cargarParametros()
@@ -19,8 +20,9 @@ parametros.cargarParametros()
         app.use(cors());
 
         // Añadimos las rutas
-        app.use('/api/v1/user', userRoute);
-        app.use('/api/v1/room', roomRoute);
+        app.use('/api/v2/user', userRoute);
+        app.use('/api/v2/room', roomRoute);
+        app.use('/api/v2/tutor', tutorRoute)
 
         //Starting the server
         app.listen(configuracion.expressConf.port, configuracion.expressConf.host, () => {
