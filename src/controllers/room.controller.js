@@ -473,7 +473,6 @@ const anadirAutorizados = async function (req, res) {
         nErrores++;
     }
 
-    
 
     if (nErrores == 0) {
         try {
