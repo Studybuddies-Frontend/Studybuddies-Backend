@@ -24,6 +24,20 @@ const guardarRoom = function (db, room, colRooms) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db("studybuddies").collection(colRooms)
+            /* 
+            Aquí se le suman un par de horas a las horas que se reciben de back para que la zona horaria
+            no afecte a como se guarda la hora en la bd. Este cambio sería solo válido para la hora peninsular. 
+            */
+            room.starting_time.setHours( room.starting_time.getHours() + 2 );
+            room.ending_time.setHours( room.ending_time.getHours() + 2 );
+
+            //Añadimos las comisiones:
+
+            //Para añadir el porcentaje antes de añadir los 50 cents:
+            //room.price_per_hour += room.price_per_hour*0.1;
+            room.price_per_hour = room.price_per_hour + 0.50;
+            //Para añadir el porcentaje después de añadir los 50 cents:
+            //room.price_per_hour += room.price_per_hour*0.1;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
@@ -42,9 +56,6 @@ const getRooms = function (db) {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = {}
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
             const document = roomCollection.find().toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -220,11 +231,6 @@ const getSalasEstudioActivasById = function (db, fechaActual, guid) {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: false, guid: guid }
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
-
-
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)
@@ -243,9 +249,6 @@ const getTutoriasActivasById = function (db, fechaActual, guid) {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true, guid: guid }
-            //if (fechaActual){
-            //	query.fecha_fin = { $gte: fechaActual };
-            //}
             const document = roomCollection.find(query).toArray(function (err, result) {
                 if (err) {
                     reject(err)

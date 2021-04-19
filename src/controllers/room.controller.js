@@ -91,7 +91,6 @@ const createRoom = async function (req, res) {
 
     }
 
-    // Los datos vienen comprobados del front??
 
     // Generar room db
     let guid = uuidv4();
@@ -178,11 +177,11 @@ const getAll = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+    
 
     if (nErrores == 0) {
         try {
-            allRoom = await new mongodbRoom.getRooms(conexionMongodb, now.getTime());
+            allRoom = await new mongodbRoom.getRooms(conexionMongodb);
         }
         catch (err) {
             console.log(`Error al conectar con el servidor.`);
@@ -310,8 +309,6 @@ const getMisSalas = async function (req, res) {
     let nErrores = 0;
     let salasEstudio = {};
     let id= req.params.id;
-    console.log("id:   ");
-    console.log(id);
 
     let conexionMongodb = {};
 
@@ -476,11 +473,11 @@ const anadirAutorizados = async function (req, res) {
         nErrores++;
     }
 
-    let now = new Date();
+    
 
     if (nErrores == 0) {
         try {
-            room = await new mongodbRoom.getRoomById(conexionMongodb, now.getTime(), req.body.guid);
+            room = await new mongodbRoom.getRoomById(conexionMongodb, req.body.guid);
             if(room[0].authorised_users.includes(req.body.id_user)){
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
