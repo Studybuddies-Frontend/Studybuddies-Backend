@@ -7,6 +7,7 @@ const getByUsername = (db, username) => {
                             u.nombre,
                             u.apellidos,
                             u.email,
+                            u.telefono,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.username = ?`;
@@ -27,6 +28,7 @@ const getByEmail = (db, email) => {
                             u.nombre,
                             u.apellidos,
                             u.email,
+                            u.telefono,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.email = ?`;
@@ -48,6 +50,7 @@ const getById = (db, id) => {
                             u.universidad,
                             u.grado,
                             u.descripcion,
+                            u.telefono,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.id = ?`;
@@ -59,10 +62,10 @@ const getById = (db, id) => {
 }
 
 
-const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole}) => {
+const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, telefono, idRole}) => {
     return new Promise((resolve, reject) => {
-        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole];
-        let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?)'
+        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, telefono, idRole];
+        let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`telefono`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?,?)'
         db.query(query, params, (err, result) => {
             if(err) {
                 console.log(err)

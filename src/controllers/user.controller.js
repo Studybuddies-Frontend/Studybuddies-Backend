@@ -162,6 +162,7 @@ const getUsuarioById = async function (req, res) {
                 result.universidad = user.universidad;
                 result.grado = user.grado;
                 result.descripcion = user.descripcion;
+                result.telefono = user.telefono;
                 result.role = user.role;
             } else {
                 statusCode = 404;
@@ -353,7 +354,7 @@ const registerAlumno = async function (req, res) {
     // Continuamos si no existen dichos datos ya
     if (nErrores == 0) {
         hashPass = await utils.createHashPassword(password);
-        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: null, idRole: constants.ID_ROLE_ALUMNO }
+        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: null, telefono: null, idRole: constants.ID_ROLE_ALUMNO }
         console.log(user)
         // Introducimos en mysql el usuario con role de alumno
         try {
@@ -411,6 +412,7 @@ const registerTutor = async function (req, res) {
     let universidad = '';
     let grado = '';
     let descripcion = '';
+    let telefono = '';
     let userExiste = {};
     let user = {};
     let result = {};
@@ -451,6 +453,9 @@ const registerTutor = async function (req, res) {
         }
         if (req.body.descripcion) {
             descripcion = req.body.descripcion;
+        }
+        if (req.body.telefono) {
+            telefono = req.body.telefono;
         }
 
     }
@@ -505,6 +510,11 @@ const registerTutor = async function (req, res) {
         statusMessage = 'No se ha proporcionado una descripcion';
         nErrores++;
     }
+    //if (!telefono.match(/^[-\s./0-9]*$/)) {
+    //    statusCode = 400;
+    //    statusMessage = 'No se ha proporcionado un telefono válido';
+    //    nErrores++;
+    //}
 
     //creo la conexion a la base de datos mysql
     if (nErrores == 0) {
@@ -566,9 +576,9 @@ const registerTutor = async function (req, res) {
     // Continuamos si no existen dichos datos ya
     if (nErrores == 0) {
         hashPass = await utils.createHashPassword(password);
-        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, idRole: constants.ID_ROLE_TUTOR }
+        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, telefono: telefono, idRole: constants.ID_ROLE_TUTOR }
         console.log(user)
-        // Introducimos en mysql el usuario con role de alumno
+        // Introducimos en mysql el usuario con role de tutor
         try {
             result = await mysqlUser.saveUsuario(conexionMysql, user);
         }
@@ -604,7 +614,7 @@ const registerTutor = async function (req, res) {
             .json({
                 result: 1,
                 mensaje: statusMessage,
-                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, role: "tutor" }
+                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, telefono: telefono, role: "tutor" }
             });
     } else {
         console.log(statusMessage);
