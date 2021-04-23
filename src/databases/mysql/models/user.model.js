@@ -58,6 +58,27 @@ const getById = (db, id) => {
     })
 }
 
+const getByRole = (db, role) => {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT u.id,
+                            u.username,
+                            u.password,
+                            u.nombre,
+                            u.apellidos,
+                            u.email,
+                            u.universidad,
+                            u.grado,
+                            u.descripcion,
+                            roles.rol as role
+        FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
+        WHERE u.id_role = ?`;
+        db.query(query, [role], (err, rows) => {
+            if (err) reject(err)
+            resolve(rows)
+        })
+    })
+}
+
 
 const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole}) => {
     return new Promise((resolve, reject) => {
@@ -77,5 +98,6 @@ module.exports = {
     getByUsername,
     getByEmail,
     getById,
-    saveUsuario
+    saveUsuario,
+    getByRole
 }

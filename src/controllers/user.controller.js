@@ -193,6 +193,78 @@ const getUsuarioById = async function (req, res) {
     }
 }
 
+const getTutores = async function (req, res) {
+    let idRole = 3;
+    let users = [];
+    let result = [];
+    let nErrores = 0;
+    let statusCode = 0;
+    let statusMessage = '';
+
+    let conexionMysql = {};
+
+    let configuracion = parametros.configuracion();
+
+    //creo la conexion a la base de datos mysql
+    if (nErrores == 0) {
+        try {
+            conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+        } catch (err) {
+            console.log('Error al crear la conexion con mysql. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+    // Recupero el usuario de la BD
+    if (nErrores == 0) {
+        try {
+            users = await mysqlUser.getByRole(conexionMysql, idRole)
+            if (users) {
+                for(var i=0;i<users.length;i++) {
+                    let user ={};
+                    user.username = users[i].username;
+                    user.nombre = users[i].nombre;
+                    user.apellidos = users[i].apellidos;
+                    user.email = users[i].email;
+                    user.universidad = users[i].universidad;
+                    user.grado = users[i].grado;
+                    user.descripcion = users[i].descripcion;
+                    user.role = users[i].role;
+                    result.push(user);
+                }
+                console.log(result);
+            } else {
+                statusCode = 404;
+                statusMessage = 'No se ha encontrado ningun tutor ';
+                nErrores++;
+            }
+        }
+        catch (err) {
+            console.log(`Error al obtener los tutores.`);
+            statusCode = 500;
+            statusMessage = 'Invalid Role ID';
+            nErrores++;
+        }
+    }
+
+    // Cerramos la conexion mysql
+    if (conexionMysql) {
+        await mysqlConnection.cerrarConexion(conexionMysql);
+    }
+
+    // Devolvemos la respuesta
+    if (nErrores == 0) {
+        console.log(`Se han obtenido los tutores correctamente`)
+        res.status(200)
+            .json({tutores: result});
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
+}
+
 
 const registerAlumno = async function (req, res) {
     let username = '';
@@ -620,5 +692,6 @@ module.exports = {
     login,
     registerAlumno,
     registerTutor,
-    getUsuarioById
+    getUsuarioById,
+    getTutores
 }
