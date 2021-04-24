@@ -224,6 +224,7 @@ const getTutores = async function (req, res) {
             if (users) {
                 for(var i=0;i<users.length;i++) {
                     let user ={};
+                    user.id = users[i].id;
                     user.username = users[i].username;
                     user.nombre = users[i].nombre;
                     user.apellidos = users[i].apellidos;
