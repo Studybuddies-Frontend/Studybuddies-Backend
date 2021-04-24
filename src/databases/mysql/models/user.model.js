@@ -75,9 +75,8 @@ const saveUsuario = (db, {username, password, nombre, apellidos, email, universi
 
 const transformUsuario = (db, id) => {
     return new Promise((resolve, reject) => {
-        //TODO comprobar que esta query funciona bien
-        let query = 'UPDATE `usuarios` SET id_role=3 WHERE id = ?'
-        db.query(query, params, (err, result) => {
+        let query = 'UPDATE usuarios u SET u.id_role=3 WHERE u.id = ?'
+        db.query(query, id, (err, result) => {
             if(err) {
                 console.log(err)
                 reject(err)

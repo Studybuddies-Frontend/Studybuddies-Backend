@@ -641,6 +641,16 @@ const transformAlumnoToTutor = async function (req, res) {
             statusMessage = 'No se ha proporcionado una descripcion';
             nErrores++;
         }
+
+        if (req.params.id) {
+            id = req.params.id
+            console.log(`Obteniendo información del usuario con id ${id}`)
+        } else {
+            console.log('No se ha definido el id del usuario.');
+            statusCode = 500;
+            statusMessage = 'General error';
+            nErrores++;
+        }
     
         //creo la conexion a la base de datos mysql
         if (nErrores == 0) {
@@ -655,18 +665,9 @@ const transformAlumnoToTutor = async function (req, res) {
             }
         }
     
-    
-        if (nErrores == 0) {
-            // Compruebo que el ID del usuario existe en la BBDD
-            //TODO try catch
-        }
-    
         // Continuo si no hay errores
         if (nErrores == 0) {
-            console.log(user)
-            // Actualizo el usuario en la base de datos con el nuevo rol
             try {
-                //TODO comprobar que recibo el ID correcto
                 result = await mysqlUser.transformUsuario(conexionMysql, id);
             }
             catch (err) {
