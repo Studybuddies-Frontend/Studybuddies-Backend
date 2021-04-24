@@ -3,7 +3,10 @@ const parametros = require('../lib/configParameters')
 const { v4: uuidv4 } = require("uuid");
 
 const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
-const mongodbRoom = require('../databases/mongodb/models/rooms.model')
+const mongodbRoom = require('../databases/mongodb/models/rooms.model');
+
+const mysqlConnection = require('../databases/mysql/repository/mysqldbManager');
+const mysqlUser = require('../databases/mysql/models/user.model')
 
 
 const createRoom = async function (req, res) {
@@ -49,13 +52,13 @@ const createRoom = async function (req, res) {
         if (req.body.ending_time) {
             ending_time = new Date(req.body.ending_time);
         }
-        if(starting_time.getFullYear < actualDate.getFullYear() || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth < actualDate.getMonth()+1 || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth == actualDate.getMonth()+1 && starting_time.getDate < actualDate.getDate()){
+        if (starting_time.getFullYear < actualDate.getFullYear() || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth < actualDate.getMonth() + 1 || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth == actualDate.getMonth() + 1 && starting_time.getDate < actualDate.getDate()) {
             console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
             statusCode = 400;
             statusMessage = 'Form error';
             nErrores++;
         }
-        if(!((ending_time.getHours() > starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() >= starting_time.getMinutes()))){
+        if (!((ending_time.getHours() > starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() >= starting_time.getMinutes()))) {
             console.log('Error. No se puede crear una sala con hora de fin menor que la hora de inicio. ');
             statusCode = 400;
             statusMessage = 'Form error';
@@ -177,7 +180,7 @@ const getAll = async function (req, res) {
         nErrores++;
     }
 
-    
+
 
     if (nErrores == 0) {
         try {
@@ -227,7 +230,7 @@ const getSalasEstudioActivas = async function (req, res) {
         nErrores++;
     }
 
-    
+
 
     if (nErrores == 0) {
         try {
@@ -308,7 +311,7 @@ const getMisSalas = async function (req, res) {
 
     let nErrores = 0;
     let salasEstudio = {};
-    let id= req.params.id;
+    let id = req.params.id;
 
     let conexionMongodb = {};
 
@@ -356,7 +359,7 @@ const getMisTutoriasPagadas = async function (req, res) {
 
     let nErrores = 0;
     let salasEstudio = {};
-    let id= req.params.id;
+    let id = req.params.id;
 
     let conexionMongodb = {};
 
@@ -477,13 +480,13 @@ const anadirAutorizados = async function (req, res) {
     if (nErrores == 0) {
         try {
             room = await new mongodbRoom.getRoomById(conexionMongodb, req.body.guid);
-            if(room[0].authorised_users.includes(req.body.id_user)){
+            if (room[0].authorised_users.includes(req.body.id_user)) {
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
                 nErrores++;
-            }else{
-            room[0].authorised_users.push(req.body.id_user);
-            await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
+            } else {
+                room[0].authorised_users.push(req.body.id_user);
+                await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
             }
         }
         catch (err) {
@@ -501,7 +504,7 @@ const anadirAutorizados = async function (req, res) {
         console.log(`Usuario autorizado con éxito`)
         res.status(200)
             .json({
-                room:room
+                room: room
             });
     } else {
         console.log(statusMessage);
@@ -656,6 +659,117 @@ const getAsignaturasByTutor = async function (req, res) {
 
 }
 
+const getUsuariosByTutoria = async function (req, res) {
+    let nErrores = 0;
+    let statusCode = 0;
+    let statusMessage = '';
+    let room = null;
+    let usuariosAutorizados = [];
+    let user = null;
+    let usuarios = [];
+
+    let conexionMongodb = {};
+    let conexionMysql = {};
+    let existeConexionMysql = false;
+
+    let configuracion = parametros.configuracion();
+
+    //creo la conexion a la base de datos mysql
+    if (nErrores == 0) {
+        try {
+            conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+            existeConexionMysql = true
+        } catch (err) {
+            console.log('Error al crear la conexion con mysql. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+    if (nErrores == 0) {
+        try {
+            conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+        } catch (err) {
+            console.log('Error al crear la conexion con mongodb. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+    if (nErrores == 0) {
+        try {
+            room = await mongodbRoom.getRoomById(conexionMongodb, req.params.guid);
+            if (!room) {
+                statusCode = 404;
+                statusMessage = 'Id incorrecto';
+                nErrores++;
+            }
+            else {
+                usuariosAutorizados = room[0].authorised_users;
+                console.log(usuariosAutorizados)
+            }
+        }
+        catch (err) {
+            console.log(`Error al obtener la sala.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+    if (nErrores == 0) {
+        if (Array.isArray(usuariosAutorizados) && usuariosAutorizados.length > 0) {
+            for (var i=0; i < usuariosAutorizados.length; i++) {
+                let datosUsuario = {};
+                try {
+                    user = await mysqlUser.getById(conexionMysql, usuariosAutorizados[i])
+                    if (user) {
+                        datosUsuario.username = user.username;
+                        datosUsuario.email = user.email;
+
+                        usuarios.push(datosUsuario)
+                    }
+                }
+                catch (err) {
+                    statusCode = 404;
+                    statusMessage = 'No se ha encontrado el usuario con id ' + usuariosAutorizados[i];
+                    nErrores++;
+                }
+            }
+        }
+    }
+
+    // Cerramos la conexion mysql
+    if (existeConexionMysql) {
+        try {
+            await mysqlConnection.cerrarConexion(conexionMysql);
+        }
+        catch (err) {
+            console.log(`Error al cerrar la conexion con mysql. ${err}`);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Usuarios autorizados obtenidos con exito`)
+        res.status(200)
+            .json({
+                usuarios_autorizados: usuarios
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
+
+}
+
 module.exports = {
     createRoom,
     getAll,
@@ -667,5 +781,6 @@ module.exports = {
     getAsignaturasByTutor,
     anadirAutorizados,
     getSalasEstudioActivasById,
-    getTutoriasActivasById
+    getTutoriasActivasById,
+    getUsuariosByTutoria
 }
