@@ -616,9 +616,105 @@ const registerTutor = async function (req, res) {
 
 }
 
+const transformAlumnoToTutor = async function (req, res) {
+        let descripcion = '';
+        let id = 0;
+        let result = {};
+        let nErrores = 0;
+        let statusCode = 0;
+        let statusMessage = '';
+    
+        let conexionMysql = {};
+        let existeConexionMysql = false;
+    
+        let configuracion = parametros.configuracion();
+    
+        if (req.body) {
+            if (req.body.descripcion) {
+                descripcion = req.body.descripcion;
+            }
+    
+        }
+
+        if (!descripcion) {
+            statusCode = 400;
+            statusMessage = 'No se ha proporcionado una descripcion';
+            nErrores++;
+        }
+    
+        //creo la conexion a la base de datos mysql
+        if (nErrores == 0) {
+            try {
+                conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+                existeConexionMysql = true;
+            } catch (err) {
+                console.log('Error al crear la conexion con mysql. ' + err);
+                statusCode = 500;
+                statusMessage = 'Connection error';
+                nErrores++;
+            }
+        }
+    
+    
+        if (nErrores == 0) {
+            // Compruebo que el ID del usuario existe en la BBDD
+            //TODO try catch
+        }
+    
+        // Continuo si no hay errores
+        if (nErrores == 0) {
+            console.log(user)
+            // Actualizo el usuario en la base de datos con el nuevo rol
+            try {
+                //TODO comprobar que recibo el ID correcto
+                result = await mysqlUser.transformUsuario(conexionMysql, id);
+            }
+            catch (err) {
+                console.log(`Error al actualizar el usuario en base de datos.`);
+                statusCode = 500;
+                statusMessage = 'Error al actualizar el usuario en base de datos';
+                nErrores++;
+            }
+    
+        }
+    
+        // Cerramos la conexion mysql
+        if (existeConexionMysql) {
+            try {
+                await mysqlConnection.cerrarConexion(conexionMysql);
+            }
+            catch (err) {
+                console.log(`Error al cerrar la conexion con mysql. ${err}`);
+                statusCode = 500;
+                statusMessage = 'Connection error';
+                nErrores++;
+            }
+        }
+    
+    
+    
+        // Devolvemos la respuesta
+        if (nErrores == 0) {
+            statusMessage = `Se ha actualizado correctamente el rol del usuario`
+            console.log(statusMessage)
+            res.status(200)
+                .json({
+                    result: 1,
+                    mensaje: statusMessage,
+                });
+        } else {
+            console.log(statusMessage);
+            res.status(statusCode || 500).json({
+                result: 0,
+                mensaje: statusMessage || 'General Error'
+            });
+        }    
+}
+
 module.exports = {
     login,
     registerAlumno,
     registerTutor,
-    getUsuarioById
+    getUsuarioById,
+    transformAlumnoToTutor
 }
