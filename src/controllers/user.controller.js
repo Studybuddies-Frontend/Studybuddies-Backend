@@ -618,6 +618,7 @@ const registerTutor = async function (req, res) {
 
 const transformAlumnoToTutor = async function (req, res) {
         let descripcion = '';
+        let telefono = '';
         let id = 0;
         let result = {};
         let nErrores = 0;
@@ -633,12 +634,21 @@ const transformAlumnoToTutor = async function (req, res) {
             if (req.body.descripcion) {
                 descripcion = req.body.descripcion;
             }
-    
+
+            if (req.body.telefono) {
+                telefono = req.body.telefono;
+            }
         }
+        
 
         if (!descripcion) {
             statusCode = 400;
             statusMessage = 'No se ha proporcionado una descripcion';
+            nErrores++;
+        }
+        if (!telefono) {
+            statusCode = 400;
+            statusMessage = 'No se ha proporcionado una telefono';
             nErrores++;
         }
 
@@ -668,7 +678,7 @@ const transformAlumnoToTutor = async function (req, res) {
         // Continuo si no hay errores
         if (nErrores == 0) {
             try {
-                result = await mysqlUser.transformUsuario(conexionMysql, id);
+                result = await mysqlUser.transformUsuario(conexionMysql, id, descripcion, telefono);
             }
             catch (err) {
                 console.log(`Error al actualizar el usuario en base de datos.`);
