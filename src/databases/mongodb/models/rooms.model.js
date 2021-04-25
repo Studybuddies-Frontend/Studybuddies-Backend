@@ -121,7 +121,34 @@ const getMisSalas = function (db, id) {
         try {
             const idNumber = parseInt(id)
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { id_user: idNumber};
+            const query = { id_user: idNumber, is_private: false};
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
+
+            const document = roomCollection.find(query).toArray(function (err, result) {
+                if (err) {
+                    reject(err)
+                }
+                
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    }
+    )
+}
+
+const getMisTutorias = function (db, id) {
+    return new Promise((resolve, reject) => {
+        try {
+            const idNumber = parseInt(id)
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { id_user: idNumber, is_private: true};
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
             let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
@@ -310,6 +337,7 @@ module.exports = {
     getSalasEstudioActivas,
     getTutoriasActivas,
     getMisSalas,
+    getMisTutorias,
     getMisTutoriasPagadas,
     updateRoom,
     getSalasEstudioActivasById,
