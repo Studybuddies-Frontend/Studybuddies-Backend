@@ -646,11 +646,11 @@ const transformAlumnoToTutor = async function (req, res) {
             statusMessage = 'No se ha proporcionado una descripcion';
             nErrores++;
         }
-        if (!telefono) {
+        /* if (!telefono) {
             statusCode = 400;
             statusMessage = 'No se ha proporcionado una telefono';
             nErrores++;
-        }
+        } */
 
         if (req.params.id) {
             id = req.params.id
