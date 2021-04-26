@@ -162,6 +162,7 @@ const getUsuarioById = async function (req, res) {
                 result.universidad = user.universidad;
                 result.grado = user.grado;
                 result.descripcion = user.descripcion;
+                result.telefono = user.telefono;
                 result.role = user.role;
             } else {
                 statusCode = 404;
@@ -426,7 +427,7 @@ const registerAlumno = async function (req, res) {
     // Continuamos si no existen dichos datos ya
     if (nErrores == 0) {
         hashPass = await utils.createHashPassword(password);
-        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: null, idRole: constants.ID_ROLE_ALUMNO }
+        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: null, telefono: null, idRole: constants.ID_ROLE_ALUMNO }
         console.log(user)
         // Introducimos en mysql el usuario con role de alumno
         try {
@@ -484,6 +485,7 @@ const registerTutor = async function (req, res) {
     let universidad = '';
     let grado = '';
     let descripcion = '';
+    let telefono = '';
     let userExiste = {};
     let user = {};
     let result = {};
@@ -524,6 +526,9 @@ const registerTutor = async function (req, res) {
         }
         if (req.body.descripcion) {
             descripcion = req.body.descripcion;
+        }
+        if (req.body.telefono) {
+            telefono = req.body.telefono;
         }
 
     }
@@ -578,6 +583,11 @@ const registerTutor = async function (req, res) {
         statusMessage = 'No se ha proporcionado una descripcion';
         nErrores++;
     }
+    //if (!telefono.match(/^[-\s./0-9]*$/)) {
+    //    statusCode = 400;
+    //    statusMessage = 'No se ha proporcionado un telefono válido';
+    //    nErrores++;
+    //}
 
     //creo la conexion a la base de datos mysql
     if (nErrores == 0) {
@@ -639,9 +649,9 @@ const registerTutor = async function (req, res) {
     // Continuamos si no existen dichos datos ya
     if (nErrores == 0) {
         hashPass = await utils.createHashPassword(password);
-        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, idRole: constants.ID_ROLE_TUTOR }
+        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, telefono: telefono, idRole: constants.ID_ROLE_TUTOR }
         console.log(user)
-        // Introducimos en mysql el usuario con role de alumno
+        // Introducimos en mysql el usuario con role de tutor
         try {
             result = await mysqlUser.saveUsuario(conexionMysql, user);
         }
@@ -677,7 +687,7 @@ const registerTutor = async function (req, res) {
             .json({
                 result: 1,
                 mensaje: statusMessage,
-                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, role: "tutor" }
+                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, telefono: telefono, role: "tutor" }
             });
     } else {
         console.log(statusMessage);
@@ -689,10 +699,117 @@ const registerTutor = async function (req, res) {
 
 }
 
+const transformAlumnoToTutor = async function (req, res) {
+        let descripcion = '';
+        let telefono = '';
+        let id = 0;
+        let result = {};
+        let nErrores = 0;
+        let statusCode = 0;
+        let statusMessage = '';
+    
+        let conexionMysql = {};
+        let existeConexionMysql = false;
+    
+        let configuracion = parametros.configuracion();
+    
+        if (req.body) {
+            if (req.body.descripcion) {
+                descripcion = req.body.descripcion;
+            }
+
+            if (req.body.telefono) {
+                telefono = req.body.telefono;
+            }
+        }
+        
+
+        if (!descripcion) {
+            statusCode = 400;
+            statusMessage = 'No se ha proporcionado una descripcion';
+            nErrores++;
+        }
+        if (!telefono) {
+            statusCode = 400;
+            statusMessage = 'No se ha proporcionado una telefono';
+            nErrores++;
+        }
+
+        if (req.params.id) {
+            id = req.params.id
+            console.log(`Obteniendo información del usuario con id ${id}`)
+        } else {
+            console.log('No se ha definido el id del usuario.');
+            statusCode = 500;
+            statusMessage = 'General error';
+            nErrores++;
+        }
+    
+        //creo la conexion a la base de datos mysql
+        if (nErrores == 0) {
+            try {
+                conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+                existeConexionMysql = true;
+            } catch (err) {
+                console.log('Error al crear la conexion con mysql. ' + err);
+                statusCode = 500;
+                statusMessage = 'Connection error';
+                nErrores++;
+            }
+        }
+    
+        // Continuo si no hay errores
+        if (nErrores == 0) {
+            try {
+                result = await mysqlUser.transformUsuario(conexionMysql, id, descripcion, telefono);
+            }
+            catch (err) {
+                console.log(`Error al actualizar el usuario en base de datos.`);
+                statusCode = 500;
+                statusMessage = 'Error al actualizar el usuario en base de datos';
+                nErrores++;
+            }
+    
+        }
+    
+        // Cerramos la conexion mysql
+        if (existeConexionMysql) {
+            try {
+                await mysqlConnection.cerrarConexion(conexionMysql);
+            }
+            catch (err) {
+                console.log(`Error al cerrar la conexion con mysql. ${err}`);
+                statusCode = 500;
+                statusMessage = 'Connection error';
+                nErrores++;
+            }
+        }
+    
+    
+    
+        // Devolvemos la respuesta
+        if (nErrores == 0) {
+            statusMessage = `Se ha actualizado correctamente el rol del usuario`
+            console.log(statusMessage)
+            res.status(200)
+                .json({
+                    result: 1,
+                    mensaje: statusMessage,
+                });
+        } else {
+            console.log(statusMessage);
+            res.status(statusCode || 500).json({
+                result: 0,
+                mensaje: statusMessage || 'General Error'
+            });
+        }    
+}
+
 module.exports = {
     login,
     registerAlumno,
     registerTutor,
     getUsuarioById,
-    getTutores
+    getTutores,
+    transformAlumnoToTutor
 }
