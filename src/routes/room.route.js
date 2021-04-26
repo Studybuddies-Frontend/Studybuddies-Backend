@@ -12,6 +12,7 @@ router.get('/tutor/mine/:id', roomController.getMisTutorias);
 router.post('/autorizar', roomController.anadirAutorizados);
 router.get('/student/:guid', roomController.getSalasEstudioActivasById);
 router.get('/tutor/:guid', roomController.getTutoriasActivasById);
+router.get('/usuariosAutorizados/:guid', roomController.getUsuariosByTutoria)
 
 module.exports = router;
 
