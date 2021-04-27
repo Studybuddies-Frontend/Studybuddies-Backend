@@ -90,10 +90,26 @@ const transformUsuario = (db, id, descripcion, telefono) => {
     })
 }
 
+
+const updateUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, id}) => {
+    return new Promise((resolve, reject) => {
+        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, id];
+        let query = 'UPDATE usuarios SET username = ?, password = ?, nombre = ?, apellidos = ?, email = ?, universidad = ?, grado = ?, descripcion = ? WHERE id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
 module.exports = {
     getByUsername,
     getByEmail,
     getById,
     saveUsuario,
-    transformUsuario
+    transformUsuario,
+    updateUsuario
 }
