@@ -744,8 +744,7 @@ const updateUser = async function (req, res) {
     let descripcion = '';
     let userExiste = {};
     let usuarioActual = {};
-    let usernameActual = '';
-    let emailActual = '';
+    let telefono = '';
     let user = {};
     let result = {};
     let hashPass = '';
@@ -768,9 +767,6 @@ const updateUser = async function (req, res) {
         if (req.body.password) {
             password = req.body.password;
         }
-        if (req.body.confirmPassword) {
-            confirmPassword = req.body.confirmPassword;
-        }
         if (req.body.nombre) {
             nombre = req.body.nombre;
         }
@@ -788,6 +784,9 @@ const updateUser = async function (req, res) {
         }
         if (req.body.descripcion) {
             descripcion = req.body.descripcion;
+        }
+        if(req.body.telefono){
+            telefono = req.body.telefono;
         }
 
     }
@@ -832,6 +831,7 @@ const updateUser = async function (req, res) {
         statusMessage = 'No se ha proporcionado un grado';
         nErrores++;
     }
+
 
     //creo la conexion a la base de datos mysql
     if (nErrores == 0) {
@@ -896,8 +896,7 @@ const updateUser = async function (req, res) {
     // Continuamos si no existen dichos datos ya
     if (nErrores == 0) {
         hashPass = await utils.createHashPassword(password);
-        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, id: id}
-        console.log(user)
+        user = { username: username, password: hashPass, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion,telefono: telefono, id: id}
         // Introducimos en mysql el usuario con role de alumno
         try {
             result = await mysqlUser.updateUsuario(conexionMysql, user);
