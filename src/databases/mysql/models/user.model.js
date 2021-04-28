@@ -8,6 +8,7 @@ const getByUsername = (db, username) => {
                             u.apellidos,
                             u.email,
                             u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.username = ?`;
