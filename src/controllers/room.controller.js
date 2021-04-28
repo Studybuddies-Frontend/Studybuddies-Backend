@@ -476,9 +476,9 @@ const getById = async function (req, res) {
     if (nErrores == 0) {
         try {
             room = await new mongodbRoom.getRoomById(conexionMongodb, req.params.guid);
-            if (!room) {
+            if (!room[0]) {
                 statusCode = 401;
-                statusMessage = 'Invalid Credentials';
+                statusMessage = 'La fecha límite de la sala ha expirado o la sala no existe';
                 nErrores++;
             }
         }
@@ -819,6 +819,70 @@ const getUsuariosByTutoria = async function (req, res) {
 
 }
 
+
+const deleteRoom = async function (req, res) {
+
+    let nErrores = 0;
+    let statusCode = 0;
+    let statusMessage = '';
+    let sala = {};
+
+    let conexionMongodb = {};
+
+    let configuracion = parametros.configuracion();
+
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+
+    if (nErrores == 0) {
+        try {
+         sala = await new mongodbRoom.getRoomByIdSinFecha(conexionMongodb, req.params.guid);
+         console.log(sala);
+         if(sala[0].authorised_users.length > 0){
+             statusCode = 400;
+             statusMessage = 'La tutoria tiene un usuario autorizado';
+             nErrores++;
+        }
+    }
+        catch (err) {
+            console.log(`Error al obtener la sala.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+
+    if (nErrores == 0) {
+        try {
+          await new mongodbRoom.deleteRoom(conexionMongodb, req.params.guid);
+        }
+        catch (err) {
+            console.log(`Error al borrar la sala.`);
+            statusCode = 500;
+            nErrores++;
+        }
+    }
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (nErrores == 0) {
+        console.log(`Sala borrada con éxito`)
+        res.status(200).send({Message: 'Sala borrada con éxito'});
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+    }
+
+}
+
 module.exports = {
     createRoom,
     getAll,
@@ -832,5 +896,6 @@ module.exports = {
     anadirAutorizados,
     getSalasEstudioActivasById,
     getTutoriasActivasById,
-    getUsuariosByTutoria
+    getUsuariosByTutoria,
+    deleteRoom
 }

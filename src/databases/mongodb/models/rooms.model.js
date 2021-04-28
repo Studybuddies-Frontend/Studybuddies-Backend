@@ -329,6 +329,47 @@ const getAsignaturasByTutor = function (db, idTutor) {
 }
 
 
+const deleteRoom = function (db, guid) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db("studybuddies").collection('rooms');
+            const document = roomCollection.deleteOne({ "guid": guid });
+            resolve(document);
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+
+
+const getRoomByIdSinFecha = function (db, guid) {
+    return new Promise((resolve, reject) => {
+
+        try {
+
+            const roomCollection = db.db('studybuddies').collection('rooms');
+
+            const query = {}
+
+            if (guid) {
+                query.guid = guid;
+            }
+            const document = roomCollection.find(query).toArray(function (err, result) {
+
+                if (err) {
+                    reject(err)
+                }
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+
+    }
+    )
+
+}
 module.exports = {
     Room,
     guardarRoom,
@@ -342,5 +383,7 @@ module.exports = {
     updateRoom,
     getSalasEstudioActivasById,
     getTutoriasActivasById,
-    getAsignaturasByTutor
+    getAsignaturasByTutor,
+    deleteRoom,
+    getRoomByIdSinFecha
 }
