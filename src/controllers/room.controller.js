@@ -506,7 +506,6 @@ const getById = async function (req, res) {
 }
 
 const anadirAutorizados = async function (req, res) {
-    console.log("intento coger la sala")
     let nErrores = 0;
     let room = {};
     let free = false;
@@ -519,7 +518,6 @@ const anadirAutorizados = async function (req, res) {
     let configuracion = parametros.configuracion();
 
     //Creo la conexon con la base de datos de mongo
-    console.log("creo la connexion con mongo")
     try {
         conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
     } catch (err) {
@@ -530,7 +528,6 @@ const anadirAutorizados = async function (req, res) {
     }
 
     //creo la conexion a la base de datos mysql
-    console.log("creo la connexion con mysql")
     if (nErrores == 0) {
         try {
             conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
@@ -558,13 +555,10 @@ const anadirAutorizados = async function (req, res) {
             nErrores++;
         }
     }
-    console.log(req.body)
-    console.log("intento coger la sala")
+
     if (nErrores == 0) {
         try {
-            console.log("coger la sala");
             room = await new mongodbRoom.getRoomById(conexionMongodb, req.body.guid);
-            console.log("sala: \n" + room);
         }
         catch (err) {
             console.log(`Error al obtener la sala.`);
