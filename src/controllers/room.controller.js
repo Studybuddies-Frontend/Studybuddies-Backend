@@ -506,16 +506,20 @@ const getById = async function (req, res) {
 }
 
 const anadirAutorizados = async function (req, res) {
-
+    console.log("intento coger la sala")
     let nErrores = 0;
     let room = {};
+    let free = false;
+    let user = null;
     let authorised_users = [];
-
+    let puntos = 0;
 
     let conexionMongodb = {};
 
     let configuracion = parametros.configuracion();
 
+    //Creo la conexon con la base de datos de mongo
+    console.log("creo la connexion con mongo")
     try {
         conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
     } catch (err) {
@@ -525,28 +529,91 @@ const anadirAutorizados = async function (req, res) {
         nErrores++;
     }
 
-
+    //creo la conexion a la base de datos mysql
+    console.log("creo la connexion con mysql")
     if (nErrores == 0) {
         try {
+            conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+            existeConexionMysql = true;
+        } catch (err) {
+            console.log('Error al crear la conexion con mysql. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+    if(req.body.free){
+        free = req.body.free;
+    }
+
+    if(req.body.id_user){
+        try {
+            user = await mysqlUser.getById(conexionMysql, req.body.id_user)
+            console.log("puntos : \n" + user.puntos)
+        }
+        catch (err) {
+            statusCode = 404;
+            statusMessage = 'No se ha encontrado el usuario con id ' + usuariosAutorizados[i];
+            nErrores++;
+        }
+    }
+    console.log(req.body)
+    console.log("intento coger la sala")
+    if (nErrores == 0) {
+        try {
+            console.log("coger la sala");
             room = await new mongodbRoom.getRoomById(conexionMongodb, req.body.guid);
-            if (room[0].authorised_users.includes(req.body.id_user)) {
-                statusCode = 423;
-                statusMessage = "Este cliente ya ha pagado"
-                nErrores++;
-            } else {
-                room[0].authorised_users.push(req.body.id_user);
-                await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-            }
+            console.log("sala: \n" + room);
         }
         catch (err) {
             console.log(`Error al obtener la sala.`);
             statusCode = 500;
             nErrores++;
         }
+        try{
+            if (room[0].authorised_users.includes(req.body.id_user)) {
+                statusCode = 423;
+                statusMessage = "Este cliente ya ha pagado"
+                nErrores++;
+            } else if(free && user.puntos >= 10){
+                room[0].authorised_users.push(req.body.id_user);
+                await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
+                //quitarle al usuario 10 puntos
+                puntos = user.puntos;
+                puntos = puntos - 10;
+                await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
+            }else if(!free){
+                room[0].authorised_users.push(req.body.id_user);
+                await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
+                //sumarle al user 1 punto
+                puntos = user.puntos;
+                puntos = puntos + 1;
+                await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
+            }else {
+                statusCode = 423;
+                statusMessage = "Este cliente no tiene suficientes puntos para pagar la clase gratuita"
+                nErrores++;
+            }
+        }catch(err){
+
+        }
     }
 
     if (conexionMongodb) {
         await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+    // Cerramos la conexion mysql
+    if (existeConexionMysql) {
+        try {
+            await mysqlConnection.cerrarConexion(conexionMysql);
+        }
+        catch (err) {
+            console.log(`Error al cerrar la conexion con mysql. ${err}`);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
     }
 
     if (nErrores == 0) {
