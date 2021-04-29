@@ -115,7 +115,13 @@ const createRoom = async function (req, res) {
 
     if (nErrores == 0) {
 
-
+        let precioTotal = '';
+        let tiempoTotal = Math.abs(ending_time - starting_time) / 36e5;
+        if(price_per_hour) {
+            precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
+        }
+        let tiempoParse = (tiempoTotal.toFixed(2)).toString().split(".")
+        let horasMin = tiempoParse[0].toString() + "." + Math.round(tiempoParse[1] /100 * 60).toString()
         let room = new mongodbRoom.Room()
         room.guid = guid;
         room.description = description
@@ -125,10 +131,12 @@ const createRoom = async function (req, res) {
         room.starting_time = starting_time;
         room.ending_time = ending_time;
         room.price_per_hour = price_per_hour;
+        room.precio_total = parseFloat(precioTotal);
         room.is_private = is_private;
         room.date = date;
         room.iTime = iTime;
         room.fTime = fTime;
+        room.tiempo_total = horasMin;
         room.authorised_users = authorised_users;
         room.id_user = id_user;
         room.room_url = room_url;
