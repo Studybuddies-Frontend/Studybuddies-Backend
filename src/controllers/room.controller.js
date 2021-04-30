@@ -570,12 +570,12 @@ const anadirAutorizados = async function (req, res) {
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
                 nErrores++;
-            } else if(free && user.puntos >= 10){
+            } else if(free && user.puntos >= 15){
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-                //quitarle al usuario 10 puntos
+                //quitarle al usuario 15 puntos
                 puntos = user.puntos;
-                puntos = puntos - 10;
+                puntos = puntos - 15;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
             }else if(!free){
                 room[0].authorised_users.push(req.body.id_user);
