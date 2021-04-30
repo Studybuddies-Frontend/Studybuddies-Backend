@@ -78,6 +78,7 @@ const login = async function (req, res) {
     if (nErrores == 0) {
         role = user.role
         id = user.id
+        puntos = user.puntos
         validPass = await bcrypt.compare(password, user.password)
         if (!validPass) {
             statusCode = 401;
@@ -88,6 +89,7 @@ const login = async function (req, res) {
             result.username = username;
             result.role = role;
             result.id = id;
+            result.puntos = puntos;
         }
     }
 

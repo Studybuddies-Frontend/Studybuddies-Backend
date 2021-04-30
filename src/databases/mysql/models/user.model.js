@@ -8,6 +8,7 @@ const getByUsername = (db, username) => {
                             u.apellidos,
                             u.email,
                             u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.username = ?`;
@@ -51,6 +52,7 @@ const getById = (db, id) => {
                             u.grado,
                             u.descripcion,
                             u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.id = ?`;
@@ -111,11 +113,26 @@ const transformUsuario = (db, id, descripcion, telefono) => {
     })
 }
 
+const updatePuntosUsuario = (db, id, puntos) => {
+    return new Promise((resolve, reject) => {
+        let params = [puntos, id];
+        let query = 'UPDATE usuarios u SET u.puntos=? WHERE u.id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
 module.exports = {
     getByUsername,
     getByEmail,
     getById,
     saveUsuario,
     getByRole,
-    transformUsuario
+    transformUsuario,
+    updatePuntosUsuario
 }
