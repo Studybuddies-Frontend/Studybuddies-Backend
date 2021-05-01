@@ -113,6 +113,23 @@ const transformUsuario = (db, id, descripcion, telefono) => {
     })
 }
 
+
+const updateUsuario = (db, {username, nombre, apellidos, email, universidad, grado, descripcion, telefono, id}) => {
+    return new Promise((resolve, reject) => {
+        let params = [username, nombre, apellidos, email, universidad, grado, descripcion, telefono, id];
+        let query = 'UPDATE usuarios SET username = ?, nombre = ?, apellidos = ?, email = ?, universidad = ?, grado = ?, descripcion = ?, telefono = ? WHERE id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
+        
+        
 const updatePuntosUsuario = (db, id, puntos) => {
     return new Promise((resolve, reject) => {
         let params = [puntos, id];
@@ -132,6 +149,7 @@ module.exports = {
     getByEmail,
     getById,
     saveUsuario,
+    updateUsuario,
     getByRole,
     transformUsuario,
     updatePuntosUsuario
