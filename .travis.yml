@@ -20,4 +20,4 @@ script:
   # npm run start
   - npm test --no-watch --no-progress --code-coverage
 after_success:
-  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/studybuddies_backend/lcov.info
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/studybuddies/lcov.info
