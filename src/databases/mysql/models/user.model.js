@@ -8,6 +8,7 @@ const getByUsername = (db, username) => {
                             u.apellidos,
                             u.email,
                             u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.username = ?`;
@@ -51,12 +52,34 @@ const getById = (db, id) => {
                             u.grado,
                             u.descripcion,
                             u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.id = ?`;
         db.query(query, [id], (err, rows) => {
             if (err) reject(err)
             resolve(rows[0])
+        })
+    })
+}
+
+const getByRole = (db, role) => {
+    return new Promise((resolve, reject) => {
+        let query = `SELECT u.id,
+                            u.username,
+                            u.password,
+                            u.nombre,
+                            u.apellidos,
+                            u.email,
+                            u.universidad,
+                            u.grado,
+                            u.descripcion,
+                            roles.rol as role
+        FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
+        WHERE u.id_role = ?`;
+        db.query(query, [role], (err, rows) => {
+            if (err) reject(err)
+            resolve(rows)
         })
     })
 }
@@ -105,11 +128,29 @@ const updateUsuario = (db, {username, nombre, apellidos, email, universidad, gra
     })
 }
 
+        
+        
+const updatePuntosUsuario = (db, id, puntos) => {
+    return new Promise((resolve, reject) => {
+        let params = [puntos, id];
+        let query = 'UPDATE usuarios u SET u.puntos=? WHERE u.id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
 module.exports = {
     getByUsername,
     getByEmail,
     getById,
     saveUsuario,
+    updateUsuario,
+    getByRole,
     transformUsuario,
-    updateUsuario
+    updatePuntosUsuario
 }

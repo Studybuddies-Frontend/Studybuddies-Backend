@@ -7,6 +7,6 @@ router.post('/register/tutor', userController.registerTutor);
 router.post('/transform/:id', userController.transformAlumnoToTutor);
 router.get('/:id', userController.getUsuarioById);
 router.post('/update', userController.updateUser);
-
+router.get('/role/tutor', userController.getTutores);
 
 module.exports = router;
