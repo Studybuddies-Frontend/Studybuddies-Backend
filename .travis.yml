@@ -17,4 +17,4 @@ install:
 script:
   - npm update
   # npm run start
-  - npm test --code-coverage
+  - npm test --no-watch --no-progress --code-coverage
