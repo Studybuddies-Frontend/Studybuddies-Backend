@@ -6,6 +6,9 @@ const utils = require('../lib/utils')
 const mysqlConnection = require('../databases/mysql/repository/mysqldbManager');
 const mysqlUser = require('../databases/mysql/models/user.model')
 
+const mongodbConnection = require('../databases/mongodb/repository/mongodbManager');
+const mongodbRoom = require('../databases/mongodb/models/rooms.model');
+
 const login = async function (req, res) {
     let username = '';
     let password = '';
@@ -807,11 +810,105 @@ const transformAlumnoToTutor = async function (req, res) {
         }    
 }
 
+const getMisTutores = async function (req, res) {
+    let id = req.params.id;
+    let idTutores = [];
+    let tutores = [];
+    let tutorias = {};
+    let tutor = {};
+    let tutor_filtrado = {};
+    let nErrores = 0;
+    let statusCode = 0;
+    let statusMessage = '';
+    let configuracion = parametros.configuracion();
+    let conexionMongodb = {};
+    let conexionMysql = {};
+
+    //Conexión a MongoDB
+    try {
+        conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+    } catch (err) {
+        console.log('Error al crear la conexion con mongodb. ' + err);
+        statusCode = 500;
+        statusMessage = 'Connection error';
+        nErrores++;
+    }
+    //Rescato de MongoDB las tutorias que este alumno ha pagado
+    if (nErrores == 0) {
+        try {
+            tutorias = await new mongodbRoom.getHistoricoTutorias(conexionMongodb, id);
+        }
+        catch (err) {
+            console.log(`Error al conectar con el servidor.`);
+            statusCode = 500;
+            nErrores++;
+        }
+
+
+    if (conexionMongodb) {
+        await mongodbConnection.cerrarConexion(conexionMongodb);
+    }
+
+    if (tutorias) {
+        for(var i=0;i<tutorias.length;i++) {
+            idTutores.push(tutorias[i].id_user);
+        }
+    }
+    //Convierto los IDs de los tutores de todas las tutorias en una lista de ids unicos, para evitar repeticiones
+    var uniq = [ ...new Set(idTutores) ]
+    
+    //creo la conexion a la base de datos mysql
+    if (nErrores == 0) {
+        try {
+            conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+        } catch (err) {
+            console.log('Error al crear la conexion con mysql. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }    
+    
+     // Recupero los datos de los usuarios de la base de datos
+     if (nErrores == 0) {
+        try {
+        for(var i=0;i<uniq.length;i++) {
+            tutor = await mysqlUser.getById(conexionMysql, uniq[i]);
+            delete tutor['password'];
+            delete tutor['puntos'];
+            delete tutor['username'];
+            delete tutor['role'];
+            tutores.push(tutor);
+        }
+        }
+        catch (err) {
+            console.log(`Error al obtener los tutores.`);
+            statusCode = 500;
+            statusMessage = 'Invalid user ID';
+            nErrores++;
+        }
+    }   
+    //Devuelvo el json
+    if (nErrores == 0) {
+        console.log(`Tutores obtenidos con exito`)
+        res.status(200)
+            .json({
+                tutores: tutores
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).send(statusMessage || 'General Error');
+        console.log("Error consulta mongoDB")
+    }
+}
+}
+
 module.exports = {
     login,
     registerAlumno,
     registerTutor,
     getUsuarioById,
     getTutores,
-    transformAlumnoToTutor
+    transformAlumnoToTutor,
+    getMisTutores
 }
