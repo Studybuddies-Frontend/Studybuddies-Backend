@@ -5,7 +5,7 @@ let chaiHttp = require('chai-http')
 const expect = require('chai').expect;
 
 chai.use(chaiHttp);
-const url = 'http://localhost:3000/api/v2'
+const url = 'http://46.101.34.232:1741/api/v2'
 
 describe('Create Successfull Room: ', () => {
     it('should return room data', (done) => {
