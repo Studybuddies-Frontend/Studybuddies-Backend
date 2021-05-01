@@ -18,6 +18,6 @@ install:
 script:
   - npm update
   # npm run start
-  - npm test -- --no-watch --no-progress --code-coverage
+  - npm run build -- --no-watch --no-progress --code-coverage
 after_success:
-  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r lcov.info
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r coverage/coverage.lcov
