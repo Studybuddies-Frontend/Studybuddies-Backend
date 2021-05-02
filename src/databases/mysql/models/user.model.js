@@ -91,7 +91,6 @@ const saveUsuario = (db, {username, password, nombre, apellidos, email, universi
         let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`telefono`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?,?)'
         db.query(query, params, (err, result) => {
             if(err) {
-                console.log(err)
                 reject(err)
             }
             if(result) resolve(result)
@@ -105,7 +104,6 @@ const transformUsuario = (db, id, descripcion, telefono) => {
         let query = 'UPDATE usuarios u SET u.id_role=3, u.descripcion=?, u.telefono=? WHERE u.id = ?'
         db.query(query, params, (err, result) => {
             if(err) {
-                console.log(err)
                 reject(err)
             }
             if(result) resolve(result)
@@ -120,7 +118,6 @@ const updateUsuario = (db, {username, nombre, apellidos, email, universidad, gra
         let query = 'UPDATE usuarios SET username = ?, nombre = ?, apellidos = ?, email = ?, universidad = ?, grado = ?, descripcion = ?, telefono = ? WHERE id = ?'
         db.query(query, params, (err, result) => {
             if(err) {
-                console.log(err)
                 reject(err)
             }
             if(result) resolve(result)
@@ -136,7 +133,6 @@ const updatePuntosUsuario = (db, id, puntos) => {
         let query = 'UPDATE usuarios u SET u.puntos=? WHERE u.id = ?'
         db.query(query, params, (err, result) => {
             if(err) {
-                console.log(err)
                 reject(err)
             }
             if(result) resolve(result)

@@ -12,10 +12,8 @@ const crearConexion = function(host, port, user, password, dbName) {
 
         conexion.connect(function(err) {
             if (err) {
-                console.log('Error al conectar con base de datos mysql');
                 reject(err);
             }
-            console.log('Conexion Mysql creada');
             resolve(conexion);
         });
     });
@@ -28,10 +26,8 @@ const cerrarConexion = function(conexion) {
         if (conexion) {
             conexion.end(function(err) {
                 if (err) {
-                    console.log('Error al cerrar la conexion con base de datos mysql');
                     reject(err);
                 }
-                console.log('Conexion Mysql cerrada');
                 resolve();
             });
         }

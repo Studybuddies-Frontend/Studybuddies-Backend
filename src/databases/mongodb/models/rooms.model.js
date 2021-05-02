@@ -22,6 +22,8 @@ class Room {
     }
 }
 
+const comisionTutorias = 0.5
+
 const guardarRoom = function (db, room, colRooms) {
     return new Promise((resolve, reject) => {
         try {
@@ -34,8 +36,8 @@ const guardarRoom = function (db, room, colRooms) {
             room.ending_time.setHours( room.ending_time.getHours() + 2 );
 
             //Añadimos las comisiones:
-            room.price_per_hour = room.price_per_hour + 0.50;
-            room.precio_total = room.precio_total + 0.50;
+            room.price_per_hour = room.price_per_hour + comisionTutorias;
+            room.precio_total = room.precio_total + comisionTutorias;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
@@ -122,7 +124,7 @@ const getTutoriasActivas = function (db) {
 const getMisSalas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
-            const idNumber = parseInt(id)
+            const idNumber = parseInt(id, 10)
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { id_user: idNumber, is_private: false};
             let fechaActual = new Date();
@@ -149,7 +151,7 @@ const getMisSalas = function (db, id) {
 const getMisTutorias = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
-            const idNumber = parseInt(id)
+            const idNumber = parseInt(id, 10)
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { id_user: idNumber, is_private: true};
             let fechaActual = new Date();
@@ -177,7 +179,7 @@ const getMisTutoriasPagadas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const idNumber = parseInt(id);
+            const idNumber = parseInt(id, 10);
             const query = {authorised_users: idNumber};
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
@@ -320,9 +322,8 @@ const getAsignaturasByTutor = function (db, idTutor) {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true };
             if (idTutor) {
-                query.id_user = parseInt(idTutor)
+                query.id_user = parseInt(idTutor, 10)
             }
-            console.log(query)
             const document = roomCollection.distinct('subject', query)
             resolve(document)
         } catch (err) {
@@ -334,7 +335,7 @@ const getAsignaturasByTutor = function (db, idTutor) {
 const getHistoricoTutorias = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
-            const idNumber = parseInt(id)
+            const idNumber = parseInt(id, 10)
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = {authorised_users: idNumber, is_private: true};
             const document = roomCollection.find(query).toArray(function (err, result) {
