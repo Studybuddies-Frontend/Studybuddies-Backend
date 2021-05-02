@@ -20,7 +20,7 @@ script:
   # npm run start
   #- npm test -- --no-watch --no-progress --code-coverage
   - cd test
-  - npm run test-with-coverage
+  - istanbul cover -- login.test.js geRooms.test.js
 after_success:
   - cd coverage
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report --force-coverage-parser lcov -r lcov.info
