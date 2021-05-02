@@ -1,4 +1,6 @@
-dist: trusty
+language: node_js
+node_js:
+  - "14.16.0"
 services:
   - mysql
   - mongodb
@@ -10,16 +12,13 @@ before_script:
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) download
 before_install:
   - mysql -e 'CREATE DATABASE studybuddies;'
-language: node_js
-node_js:
-  - "12.21.0"
 install:
   - npm install codacy-coverage --save
 script:
   - npm update
-  # npm run start
+  - npm run start
   #- npm test -- --no-watch --no-progress --code-coverage
-  - cd test
-  - istanbul cover -- login.test.js geRooms.test.js createRooms.test.js 
+  # cd test
+  - npm run test --no-watch --no-progress --code--coverage
 after_success:
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r test/coverage/lcov.info
