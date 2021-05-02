@@ -13,6 +13,7 @@ router.post('/autorizar', roomController.anadirAutorizados);
 router.get('/student/:guid', roomController.getSalasEstudioActivasById);
 router.get('/tutor/:guid', roomController.getTutoriasActivasById);
 router.get('/usuariosAutorizados/:guid', roomController.getUsuariosByTutoria)
+router.delete('/delete/:guid', roomController.deleteRoom);
 
 module.exports = router;
 

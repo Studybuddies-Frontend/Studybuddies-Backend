@@ -10,10 +10,12 @@ class Room {
             this.starting_time = null,
             this.ending_time = null,
             this.price_per_hour = 0,
+            this.precio_total = '',
             this.is_private = null,
             this.date = '',
             this.iTime = '',
             this.fTime = '',
+            this.tiempo_total = '';
             this.authorised_users = [],
             this.id_user = 0,
             this.room_url = ''
@@ -33,6 +35,7 @@ const guardarRoom = function (db, room, colRooms) {
 
             //Añadimos las comisiones:
             room.price_per_hour = room.price_per_hour + 0.50;
+            room.precio_total = room.precio_total + 0.50;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
@@ -349,6 +352,47 @@ const getHistoricoTutorias = function (db, id) {
 }
 
 
+const deleteRoom = function (db, guid) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db("studybuddies").collection('rooms');
+            const document = roomCollection.deleteOne({ "guid": guid });
+            resolve(document);
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+
+
+const getRoomByIdSinFecha = function (db, guid) {
+    return new Promise((resolve, reject) => {
+
+        try {
+
+            const roomCollection = db.db('studybuddies').collection('rooms');
+
+            const query = {}
+
+            if (guid) {
+                query.guid = guid;
+            }
+            const document = roomCollection.find(query).toArray(function (err, result) {
+
+                if (err) {
+                    reject(err)
+                }
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+
+    }
+    )
+
+}
 module.exports = {
     Room,
     guardarRoom,
@@ -363,5 +407,7 @@ module.exports = {
     getSalasEstudioActivasById,
     getTutoriasActivasById,
     getAsignaturasByTutor,
-    getHistoricoTutorias
+    getHistoricoTutorias,
+    deleteRoom,
+    getRoomByIdSinFecha
 }

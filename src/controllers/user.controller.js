@@ -913,11 +913,215 @@ const getMisTutores = async function (req, res) {
 }
 }
 
+
+const updateUser = async function (req, res) {
+    let username = '';
+    let nombre = '';
+    let apellidos = '';
+    let email = '';
+    let universidad = '';
+    let grado = '';
+    let descripcion = '';
+    let userExiste = {};
+    let usuarioActual = {};
+    let telefono = '';
+    let user = {};
+    let result = {};
+    let nErrores = 0;
+    let statusCode = 0;
+    let statusMessage = '';
+
+    let conexionMysql = {};
+    let existeConexionMysql = false;
+
+    let configuracion = parametros.configuracion();
+
+    if (req.body) {
+        if (req.body.username) {
+            username = req.body.username;
+        }
+        if(req.body.id){
+            id = req.body.id;
+        }
+        if (req.body.nombre) {
+            nombre = req.body.nombre;
+        }
+        if (req.body.apellidos) {
+            apellidos = req.body.apellidos;
+        }
+        if (req.body.email) {
+            email = req.body.email;
+        }
+        if (req.body.universidad) {
+            universidad = req.body.universidad;
+        }
+        if (req.body.grado) {
+            grado = req.body.grado;
+        }
+        if (req.body.descripcion) {
+            descripcion = req.body.descripcion;
+        }
+        if(req.body.telefono){
+            telefono = req.body.telefono;
+        }
+
+    }
+
+    if (!username) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un nombre de usuario';
+        nErrores++;
+    }
+    if (!nombre) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un nombre';
+        nErrores++;
+    }
+    if (!apellidos) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado unos apellidos';
+        nErrores++;
+    }
+    if (!email) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un email';
+        nErrores++;
+    }
+    if (!email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un email válido';
+        nErrores++;
+    }
+    if (!universidad) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado una universidad';
+        nErrores++;
+    }
+    if (!grado) {
+        statusCode = 400;
+        statusMessage = 'No se ha proporcionado un grado';
+        nErrores++;
+    }
+
+
+    //creo la conexion a la base de datos mysql
+    if (nErrores == 0) {
+        try {
+            conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
+
+            existeConexionMysql = true;
+        } catch (err) {
+            console.log('Error al crear la conexion con mysql. ' + err);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+
+
+    if (nErrores == 0){
+        try{
+            usuarioActual = await mysqlUser.getById(conexionMysql, id);
+        }  catch (err) {
+            console.log(`Error al obtener el usuario.`);
+            statusCode = 500;
+            statusMessage = 'Invalid Id';
+        }
+    }
+
+    if (nErrores == 0) {
+        // Compruebo que no existe un usuario con el username
+        try {
+            userExiste = await mysqlUser.getByUsername(conexionMysql, username)
+            if (userExiste && userExiste.id != usuarioActual.id) {
+                statusCode = 200;
+                statusMessage = 'Este nombre de usuario ya existe';
+                nErrores++;
+            }
+            else {
+                // Comprobamos que no existe un usuario con el email
+                try {
+                    userExiste = await mysqlUser.getByEmail(conexionMysql, email)
+                    if (userExiste && userExiste.id != usuarioActual.id) {
+                        statusCode = 200;
+                        statusMessage = 'Este email ya existe';
+                        nErrores++;
+                    }
+                }
+                catch (err) {
+                    console.log(`Error al obtener el email ${email}.`);
+                    statusCode = 500;
+                    statusMessage = 'Invalid Email';
+                    nErrores++;
+                }
+            }
+        }
+        catch (err) {
+            console.log(`Error al obtener el usuario ${username}.`);
+            statusCode = 500;
+            statusMessage = 'Invalid Username';
+        }
+    }
+
+    // Continuamos si no existen dichos datos ya
+    if (nErrores == 0) {
+        user = { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion,telefono: telefono, id: id}
+        // Introducimos en mysql el usuario con role de alumno
+        try {
+            result = await mysqlUser.updateUsuario(conexionMysql, user);
+        }
+        catch (err) {
+            console.log(`Error al editar el usuario en base de datos.`);
+            statusCode = 500;
+            statusMessage = 'Error al editar el usuario en base de datos';
+            nErrores++;
+        }
+
+    }
+
+    // Cerramos la conexion mysql
+    if (existeConexionMysql) {
+        try {
+            await mysqlConnection.cerrarConexion(conexionMysql);
+        }
+        catch (err) {
+            console.log(`Error al cerrar la conexion con mysql. ${err}`);
+            statusCode = 500;
+            statusMessage = 'Connection error';
+            nErrores++;
+        }
+    }
+
+
+
+    // Devolvemos la respuesta
+    if (nErrores == 0) {
+        statusMessage = `Edición realizado correctamente para el usuario`
+        console.log(statusMessage)
+        res.status(200)
+            .json({
+                result: 1,
+                mensaje: statusMessage,
+                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, role: "tutor" }
+            });
+    } else {
+        console.log(statusMessage);
+        res.status(statusCode || 500).json({
+            result: 0,
+            mensaje: statusMessage || 'General Error'
+        });
+    }
+
+
+}
+
 module.exports = {
     login,
     registerAlumno,
     registerTutor,
     getUsuarioById,
+    updateUser,
     getTutores,
     transformAlumnoToTutor,
     getMisTutores
