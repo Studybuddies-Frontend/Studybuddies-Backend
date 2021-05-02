@@ -10,10 +10,12 @@ class Room {
             this.starting_time = null,
             this.ending_time = null,
             this.price_per_hour = 0,
+            this.precio_total = '',
             this.is_private = null,
             this.date = '',
             this.iTime = '',
             this.fTime = '',
+            this.tiempo_total = '';
             this.authorised_users = [],
             this.id_user = 0,
             this.room_url = ''
@@ -33,6 +35,7 @@ const guardarRoom = function (db, room, colRooms) {
 
             //Añadimos las comisiones:
             room.price_per_hour = room.price_per_hour + 0.50;
+            room.precio_total = room.precio_total + 0.50;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
