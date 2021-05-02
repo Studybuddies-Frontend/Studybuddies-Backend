@@ -8,5 +8,6 @@ router.post('/transform/:id', userController.transformAlumnoToTutor);
 router.get('/:id', userController.getUsuarioById);
 router.post('/update', userController.updateUser);
 router.get('/role/tutor', userController.getTutores);
+router.get('/:id/myTutors', userController.getMisTutores);
 
 module.exports = router;
