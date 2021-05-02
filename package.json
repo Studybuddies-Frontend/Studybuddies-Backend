@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --require blanket --report lcovonly -- -R spec > ./lcov.info",
-    "test-with-coverage": "codacy-coverage mocha-lcov-reporter > coverage/coverage.lcov",
+    "test": "mocha --require blanket --report lcovonly -- -R spec > ./lcov.info && codacy-coverage mocha-lcov-reporter > coverage/coverage.lcov",
+    "test-with-coverage": "istanbul cover -- login.test.js geRooms.test.js",
     "start": "nodemon api-studdybuddies-backend.js"
   },
   "author": "",
