@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "istanbul cover _mocha --report lcovonly -- -R spec && cat test/coverage/lcov.info && rm -rf ./coverage",
-        "test-with-coverage": "istanbul cover -- login.test.js geRooms.test.js",
+        "test": "istanbul cover -- login.test.js createRoom.test.js getRooms.test.js ",
+        "test-with-coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat test/coverage/lcov.info | codacy-coverage && rm -rf ./coverage",
         "start": "nodemon api-studdybuddies-backend.js"
     },
     "author": "",
