@@ -20,9 +20,9 @@ parametros.cargarParametros()
         app.use(cors());
 
         // Añadimos las rutas
-        app.use('/api/v2/user', userRoute);
-        app.use('/api/v2/room', roomRoute);
-        app.use('/api/v2/tutor', tutorRoute)
+        app.use('/api/v3/user', userRoute);
+        app.use('/api/v3/room', roomRoute);
+        app.use('/api/v3/tutor', tutorRoute)
 
         //Starting the server
         app.listen(configuracion.expressConf.port, configuracion.expressConf.host, () => {
