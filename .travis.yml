@@ -16,7 +16,7 @@ install:
   - npm install codacy-coverage --save
 script:
   - npm update
-  # npm run start
+  #- npm run start
   #- npm test -- --no-watch --no-progress --code-coverage
   # cd test
   - npm run test --no-watch --no-progress --code--coverage
