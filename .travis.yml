@@ -15,6 +15,7 @@ node_js:
   - "12.21.0"
 install:
   - npm install codacy-coverage
+  - npm install istanbul
 script:
   - npm update
   # npm run start
