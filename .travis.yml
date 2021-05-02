@@ -15,12 +15,11 @@ node_js:
   - "12.21.0"
 install:
   - npm install codacy-coverage --save
-  - npm install istanbul --save
 script:
   - npm update
   # npm run start
   #- npm test -- --no-watch --no-progress --code-coverage
   - cd test
-  - istanbul cover -- login.test.js geRooms.test.js
+  - istanbul cover -- login.test.js geRooms.test.js createRooms.test.js 
 after_success:
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r test/coverage/lcov.info
