@@ -14,8 +14,8 @@ language: node_js
 node_js:
   - "12.21.0"
 install:
-  - npm install codacy-coverage
-  - npm install istanbul
+  - npm install codacy-coverage --save
+  - npm install istanbul --save
 script:
   - npm update
   # npm run start
@@ -23,5 +23,4 @@ script:
   - cd test
   - istanbul cover -- login.test.js geRooms.test.js
 after_success:
-  - cd coverage
-  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report --force-coverage-parser lcov -r lcov.info
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r test/coverage/lcov.info
