@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --require blanket --report lcovonly -- -R spec > ./lcov.info",
-    "test-with-coverage": "./node_modules/.bin/mocha --require blanket -R mocha-lcov-reporter > coverage/coverage.lcov",
+    "test-with-coverage": "codacy-coverage mocha-lcov-reporter > coverage/coverage.lcov",
     "start": "nodemon api-studdybuddies-backend.js"
   },
   "author": "",

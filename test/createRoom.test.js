@@ -18,7 +18,7 @@ describe('Create Successfull Room: ', () => {
                 "subject": "EGC",
                 "starting_time": "2021-05-18T16:00:00Z",
                 "ending_time": "2021-05-18T17:00:00Z",
-                "price_per_hour": 80,
+                "price_per_hour": 10,
                 "is_private": true,
                 "id_user": 3
             })
