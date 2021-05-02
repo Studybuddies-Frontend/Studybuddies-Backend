@@ -19,6 +19,6 @@ script:
   #- npm run start
   #- npm test -- --no-watch --no-progress --code-coverage
   - cd test
-  - npm run test
+  #npm run test
 after_success:
   - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r test/coverage/lcov.info
