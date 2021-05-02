@@ -887,7 +887,17 @@ const getMisTutores = async function (req, res) {
             statusMessage = 'Invalid user ID';
             nErrores++;
         }
-    }   
+    }  
+        // Cerramos la conexion mysql
+            try {
+                await mysqlConnection.cerrarConexion(conexionMysql);
+            }
+            catch (err) {
+                console.log(`Error al cerrar la conexion con mysql. ${err}`);
+                statusCode = 500;
+                statusMessage = 'Connection error';
+                nErrores++;
+            }
     //Devuelvo el json
     if (nErrores == 0) {
         console.log(`Tutores obtenidos con exito`)
