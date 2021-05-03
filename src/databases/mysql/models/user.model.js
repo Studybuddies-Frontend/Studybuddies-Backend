@@ -7,6 +7,8 @@ const getByUsername = (db, username) => {
                             u.nombre,
                             u.apellidos,
                             u.email,
+                            u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.username = ?`;
@@ -27,6 +29,7 @@ const getByEmail = (db, email) => {
                             u.nombre,
                             u.apellidos,
                             u.email,
+                            u.telefono,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.email = ?`;
@@ -48,6 +51,8 @@ const getById = (db, id) => {
                             u.universidad,
                             u.grado,
                             u.descripcion,
+                            u.telefono,
+                            u.puntos,
                             roles.rol as role
         FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
         WHERE u.id = ?`;
@@ -58,14 +63,76 @@ const getById = (db, id) => {
     })
 }
 
-
-const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole}) => {
+const getByRole = (db, role) => {
     return new Promise((resolve, reject) => {
-        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, idRole];
-        let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?)'
+        let query = `SELECT u.id,
+                            u.username,
+                            u.password,
+                            u.nombre,
+                            u.apellidos,
+                            u.email,
+                            u.universidad,
+                            u.grado,
+                            u.descripcion,
+                            roles.rol as role
+        FROM usuarios u INNER JOIN roles_usuario roles ON u.id_role = roles.id 
+        WHERE u.id_role = ?`;
+        db.query(query, [role], (err, rows) => {
+            if (err) reject(err)
+            resolve(rows)
+        })
+    })
+}
+
+
+const saveUsuario = (db, {username, password, nombre, apellidos, email, universidad, grado, descripcion, telefono, idRole}) => {
+    return new Promise((resolve, reject) => {
+        let params = [username, password, nombre, apellidos, email, universidad, grado, descripcion, telefono, idRole];
+        let query = 'INSERT INTO `usuarios`(`username`,`password`,`nombre`,`apellidos`,`email`,`universidad`,`grado`,`descripcion`,`telefono`,`id_role`) VALUES (?,?,?,?,?,?,?,?,?,?)'
         db.query(query, params, (err, result) => {
             if(err) {
-                console.log(err)
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
+const transformUsuario = (db, id, descripcion, telefono) => {
+    return new Promise((resolve, reject) => {
+        let params = [descripcion, telefono, id];
+        let query = 'UPDATE usuarios u SET u.id_role=3, u.descripcion=?, u.telefono=? WHERE u.id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
+
+const updateUsuario = (db, {username, nombre, apellidos, email, universidad, grado, descripcion, telefono, id}) => {
+    return new Promise((resolve, reject) => {
+        let params = [username, nombre, apellidos, email, universidad, grado, descripcion, telefono, id];
+        let query = 'UPDATE usuarios SET username = ?, nombre = ?, apellidos = ?, email = ?, universidad = ?, grado = ?, descripcion = ?, telefono = ? WHERE id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
+                reject(err)
+            }
+            if(result) resolve(result)
+        })
+    })
+}
+
+        
+        
+const updatePuntosUsuario = (db, id, puntos) => {
+    return new Promise((resolve, reject) => {
+        let params = [puntos, id];
+        let query = 'UPDATE usuarios u SET u.puntos=? WHERE u.id = ?'
+        db.query(query, params, (err, result) => {
+            if(err) {
                 reject(err)
             }
             if(result) resolve(result)
@@ -77,5 +144,9 @@ module.exports = {
     getByUsername,
     getByEmail,
     getById,
-    saveUsuario
+    saveUsuario,
+    updateUsuario,
+    getByRole,
+    transformUsuario,
+    updatePuntosUsuario
 }

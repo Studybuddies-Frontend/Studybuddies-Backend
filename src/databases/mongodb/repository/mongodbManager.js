@@ -17,10 +17,8 @@ const cerrarConexion = async function(conexion) {
         if(conexion){
             conexion.close(function(err) {
                 if(err) {
-                    console.log("Error al cerrar la conexion con base de datos Mongo")
                     reject(err);
                 }
-                console.log("Conexion Mongo cerrada")
                 resolve()
             })
         }

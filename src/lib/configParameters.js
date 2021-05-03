@@ -1,4 +1,4 @@
-const nconf = require('nconf')
+const nconf = require("nconf")
 
 class Parametros {
     constructor(mysqlConf, mongoConf, expressConf, arrayOriginsCors) {
@@ -18,11 +18,11 @@ module.exports = {
     cargarParametros() {
         return new Promise(function(resolve, reject) {
             try{
-                let ficheroConfig = `./config/_config.local.json`;
+                let ficheroConfig = "./config/_config.pro.json";
                 nconf.argv().env().file({ file: ficheroConfig });
                 let mysqlConf = {};
                 try {
-                    mysqlConf = nconf.get('MySQL_DB');
+                    mysqlConf = nconf.get("MySQL_DB");
                     if (!mysqlConf) {
                         reject("No se ha definido la configuracion mysql");
                     } else {
@@ -38,7 +38,7 @@ module.exports = {
 
                 let mongoConf = {};
                 try {
-                    mongoConf = nconf.get('Mongo_DB');
+                    mongoConf = nconf.get("Mongo_DB");
                     if (!mongoConf) {
                         reject("No se ha definido la configuracion mongo");
                     } else {
@@ -55,7 +55,7 @@ module.exports = {
 
                 let expressConf = {};
                 try {
-                    expressConf = nconf.get('Launch_App');
+                    expressConf = nconf.get("Launch_App");
                     if (!expressConf) {
                         reject("No se ha definido la configuracion redis");
                     } else {
@@ -68,7 +68,7 @@ module.exports = {
  
                 let arrayOriginesCors = [];
                 try {
-                    arrayOriginesCors = nconf.get('Origins_Allowed');
+                    arrayOriginesCors = nconf.get("Origins_Allowed");
                 } catch (err) {
                     reject("No se ha podido cargar la configuracion cors")
                 }

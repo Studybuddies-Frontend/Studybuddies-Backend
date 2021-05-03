@@ -1,4 +1,6 @@
-dist: trusty
+language: node_js
+node_js:
+  - "14.16.0"
 services:
   - mysql
   - mongodb
@@ -7,14 +9,16 @@ before_script:
   - mongo studybuddies --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
   - npm install -g @angular/cli
   - npm install
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) download
 before_install:
   - mysql -e 'CREATE DATABASE studybuddies;'
-language: node_js
-node_js:
-  - "12.21.0"
 install:
-  - npm install codacy-coverage
+  - npm install codacy-coverage --save
 script:
   - npm update
-  # npm run start
-  # npm test
+  #- npm run start
+  #- npm test -- --no-watch --no-progress --code-coverage
+  # cd test
+  #npm run test
+after_success:
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r test/coverage/lcov.info

@@ -10,15 +10,19 @@ class Room {
             this.starting_time = null,
             this.ending_time = null,
             this.price_per_hour = 0,
+            this.precio_total = '',
             this.is_private = null,
             this.date = '',
             this.iTime = '',
             this.fTime = '',
+            this.tiempo_total = '';
             this.authorised_users = [],
             this.id_user = 0,
             this.room_url = ''
     }
 }
+
+const comisionTutorias = 0.5
 
 const guardarRoom = function (db, room, colRooms) {
     return new Promise((resolve, reject) => {
@@ -32,7 +36,8 @@ const guardarRoom = function (db, room, colRooms) {
             room.ending_time.setHours( room.ending_time.getHours() + 2 );
 
             //Añadimos las comisiones:
-            room.price_per_hour = room.price_per_hour + 0.50;
+            room.price_per_hour = room.price_per_hour + comisionTutorias;
+            room.precio_total = room.precio_total + comisionTutorias;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
@@ -119,9 +124,36 @@ const getTutoriasActivas = function (db) {
 const getMisSalas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
-            const idNumber = parseInt(id)
+            const idNumber = parseInt(id, 10)
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const query = { id_user: idNumber};
+            const query = { id_user: idNumber, is_private: false};
+            let fechaActual = new Date();
+            fechaActual.setHours( fechaActual.getHours() + 2 );
+            let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
+            if (fecha){
+            	query.ending_time =  {$gte: new Date(fecha)};
+            }
+
+            const document = roomCollection.find(query).toArray(function (err, result) {
+                if (err) {
+                    reject(err)
+                }
+                
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    }
+    )
+}
+
+const getMisTutorias = function (db, id) {
+    return new Promise((resolve, reject) => {
+        try {
+            const idNumber = parseInt(id, 10)
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = { id_user: idNumber, is_private: true};
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
             let fecha = moment(fechaActual).format("YYYY-MM-DDTHH:mm:ss");
@@ -147,7 +179,7 @@ const getMisTutoriasPagadas = function (db, id) {
     return new Promise((resolve, reject) => {
         try {
             const roomCollection = db.db('studybuddies').collection('rooms');
-            const idNumber = parseInt(id);
+            const idNumber = parseInt(id, 10);
             const query = {authorised_users: idNumber};
             let fechaActual = new Date();
             fechaActual.setHours( fechaActual.getHours() + 2 );
@@ -290,9 +322,8 @@ const getAsignaturasByTutor = function (db, idTutor) {
             const roomCollection = db.db('studybuddies').collection('rooms');
             const query = { is_private: true };
             if (idTutor) {
-                query.id_user = parseInt(idTutor)
+                query.id_user = parseInt(idTutor, 10)
             }
-            console.log(query)
             const document = roomCollection.distinct('subject', query)
             resolve(document)
         } catch (err) {
@@ -301,7 +332,68 @@ const getAsignaturasByTutor = function (db, idTutor) {
     })
 }
 
+const getHistoricoTutorias = function (db, id) {
+    return new Promise((resolve, reject) => {
+        try {
+            const idNumber = parseInt(id, 10)
+            const roomCollection = db.db('studybuddies').collection('rooms');
+            const query = {authorised_users: idNumber, is_private: true};
+            const document = roomCollection.find(query).toArray(function (err, result) {
+                if (err) {
+                    reject(err)
+                }
+                
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+    }
+    )
+}
 
+
+const deleteRoom = function (db, guid) {
+    return new Promise((resolve, reject) => {
+        try {
+            const roomCollection = db.db("studybuddies").collection('rooms');
+            const document = roomCollection.deleteOne({ "guid": guid });
+            resolve(document);
+        }
+        catch (err) {
+            reject(err)
+        }
+    })
+}
+
+
+const getRoomByIdSinFecha = function (db, guid) {
+    return new Promise((resolve, reject) => {
+
+        try {
+
+            const roomCollection = db.db('studybuddies').collection('rooms');
+
+            const query = {}
+
+            if (guid) {
+                query.guid = guid;
+            }
+            const document = roomCollection.find(query).toArray(function (err, result) {
+
+                if (err) {
+                    reject(err)
+                }
+                resolve(result);
+            });
+        } catch (err) {
+            reject(err);
+        }
+
+    }
+    )
+
+}
 module.exports = {
     Room,
     guardarRoom,
@@ -310,9 +402,13 @@ module.exports = {
     getSalasEstudioActivas,
     getTutoriasActivas,
     getMisSalas,
+    getMisTutorias,
     getMisTutoriasPagadas,
     updateRoom,
     getSalasEstudioActivasById,
     getTutoriasActivasById,
-    getAsignaturasByTutor
+    getAsignaturasByTutor,
+    getHistoricoTutorias,
+    deleteRoom,
+    getRoomByIdSinFecha
 }
