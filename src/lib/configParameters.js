@@ -18,7 +18,7 @@ module.exports = {
     cargarParametros() {
         return new Promise(function(resolve, reject) {
             try{
-                let ficheroConfig = "./config/_config.pro.json";
+                let ficheroConfig = "./config/_config.local.json";
                 nconf.argv().env().file({ file: ficheroConfig });
                 let mysqlConf = {};
                 try {

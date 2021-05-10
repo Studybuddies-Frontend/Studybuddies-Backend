@@ -276,6 +276,7 @@ const registerAlumno = async function (req, res) {
     let statusMessage = "";
 
     let conexionMysql = {};
+    let existeConexionMysql = false;
 
     let configuracion = parametros.configuracion();
 
@@ -398,14 +399,14 @@ const registerAlumno = async function (req, res) {
                 }
                 catch (err) {
                     statusCode = 500;
-                    statusMessage = "Invalid Email";
+                    statusMessage = "Invalid Email, error trying to connect to the db";
                     nErrores++;
                 }
             }
         }
         catch (err) {
             statusCode = 500;
-            statusMessage = "Invalid Username";
+            statusMessage = "Invalid Username, error trying to connect to the db";
             nErrores++;
         }
     }
@@ -445,7 +446,7 @@ const registerAlumno = async function (req, res) {
             .json({
                 result: 1,
                 mensaje: statusMessage,
-                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, role: "alumno" }
+                usuario: {result}
             });
     } else {
         res.status(statusCode || 500).json({
@@ -574,7 +575,6 @@ const registerTutor = async function (req, res) {
     if (nErrores === 0) {
         try {
             conexionMysql = await mysqlConnection.crearConexion(configuracion.mysqlConf.host, configuracion.mysqlConf.port, configuracion.mysqlConf.username, configuracion.mysqlConf.password, configuracion.mysqlConf.name);
-
             existeConexionMysql = true;
         } catch (err) {
             statusCode = 500;
@@ -661,7 +661,7 @@ const registerTutor = async function (req, res) {
             .json({
                 result: 1,
                 mensaje: statusMessage,
-                usuario: { username: username, nombre: nombre, apellidos: apellidos, email: email, universidad: universidad, grado: grado, descripcion: descripcion, telefono: telefono, role: "tutor" }
+                usuario: { result }
             });
     } else {
         res.status(statusCode || 500).json({
