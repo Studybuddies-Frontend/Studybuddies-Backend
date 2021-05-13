@@ -54,8 +54,8 @@ const createRoom = async function (req, res) {
         if (req.body.ending_time) {
             ending_time = new Date(req.body.ending_time);
         }
-        let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
-        let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
+        let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
+        let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
         let fechaFinIgualAFechaInicio = ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() == starting_time.getDate();
         let horaFinAnteriorAHoraInicio = (ending_time.getHours() < starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() <= starting_time.getMinutes());
 
