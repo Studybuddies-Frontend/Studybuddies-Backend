@@ -54,14 +54,24 @@ const createRoom = async function (req, res) {
         if (req.body.ending_time) {
             ending_time = new Date(req.body.ending_time);
         }
-        if (starting_time.getFullYear < actualDate.getFullYear() || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth < actualDate.getMonth() + 1 || starting_time.getFullYear == actualDate.getFullYear() && starting_time.getMonth == actualDate.getMonth() + 1 && starting_time.getDate < actualDate.getDate()) {
+        let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
+        let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
+        let fechaFinIgualAFechaInicio = ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() == starting_time.getDate();
+        let horaFinAnteriorAHoraInicio = (ending_time.getHours() < starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() <= starting_time.getMinutes());
+
+        if (fechaPasado) {
             statusCode = 400;
-            statusMessage = "Form error";
+            statusMessage = "Form error, la fecha de inicio no puede estar en pasado";
             nErrores++;
         }
-        if (!((ending_time.getHours() > starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() >= starting_time.getMinutes()))) {
+        if (fechaFinAnteriorAFechaInicio) {
             statusCode = 400;
-            statusMessage = "Form error";
+            statusMessage = "Form error, la fecha de fin no puede ser anterior a la fecha de inicio";
+            nErrores++;
+        }
+        if (fechaFinIgualAFechaInicio && horaFinAnteriorAHoraInicio) {
+            statusCode = 400;
+            statusMessage = "Form error, la hora de fin no puede ser anterior a la de inicio";
             nErrores++;
         }
         if (req.body.price_per_hour) {
@@ -163,9 +173,9 @@ const createRoom = async function (req, res) {
         }
     }
     // Cerramos la conexion mongo
-    if (conexionMongodb) {
+/*     if (conexionMongodb) {
         await mongodbConnection.cerrarConexion(conexionMongodb);
-    }
+    } */
 
     // Devolvemos la respuesta
     if (nErrores === 0) {
