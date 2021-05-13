@@ -70,14 +70,16 @@ const createRoom = async function (req, res) {
         if (req.body.is_private) {
             is_private = req.body.is_private;
         }
+        //Comprobamos que la duración no sea menor a una hora
         if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) < 1) {
             statusCode = 400;
             statusMessage = "No se puede crear una tutoria de duracion menor a una hora";
             nErrores++;
         }
+        //Comprobamos que la duración no sea mayor a cinco horas
         if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) > 5) {
             statusCode = 400;
-            statusMessage = "No se puede crear una tutoria de duracion mayor a cinco";
+            statusMessage = "No se puede crear una tutoria de duracion mayor a cinco horas";
             nErrores++;
         }
         if (req.body.date) {
@@ -126,12 +128,10 @@ const createRoom = async function (req, res) {
         let precioTotal = "";
         let tiempoTotal = Math.abs(ending_time - starting_time) / 36e5;
         if(price_per_hour) {
-            precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
-            //Calculamos las comisiones para el precio total
-            let comisionTotalTutoria = (comisionTutorias * tiempoTotal).toFixed(2);
             //Añadimos las comisiones:
-            room.price_per_hour = room.price_per_hour + comisionTutorias;
-            room.precio_total = room.precio_total + comisionTotalTutoria;
+            price_per_hour = price_per_hour + comisionTutorias;
+            //Calculamos el precio total a partir del precio por hora con las comisiones
+            precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
         }
         let tiempoParse = (tiempoTotal.toFixed(2)).toString().split(".")
         let horasMin = tiempoParse[0].toString() + "." + Math.round(tiempoParse[1] /100 * 60).toString()
