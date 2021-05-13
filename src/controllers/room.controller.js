@@ -8,6 +8,8 @@ const mongodbRoom = require("../databases/mongodb/models/rooms.model");
 const mysqlConnection = require("../databases/mysql/repository/mysqldbManager");
 const mysqlUser = require("../databases/mysql/models/user.model")
 
+const comisionTutorias = 0.5
+
 
 const createRoom = async function (req, res) {
     let nErrores = 0;
@@ -68,6 +70,16 @@ const createRoom = async function (req, res) {
         if (req.body.is_private) {
             is_private = req.body.is_private;
         }
+        if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) < 1) {
+            statusCode = 400;
+            statusMessage = "No se puede crear una tutoria de duracion menor a una hora";
+            nErrores++;
+        }
+        if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) > 5) {
+            statusCode = 400;
+            statusMessage = "No se puede crear una tutoria de duracion mayor a cinco";
+            nErrores++;
+        }
         if (req.body.date) {
             date = req.body.date;
         }
@@ -115,6 +127,11 @@ const createRoom = async function (req, res) {
         let tiempoTotal = Math.abs(ending_time - starting_time) / 36e5;
         if(price_per_hour) {
             precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
+            //Calculamos las comisiones para el precio total
+            let comisionTotalTutoria = (comisionTutorias * tiempoTotal).toFixed(2);
+            //Añadimos las comisiones:
+            room.price_per_hour = room.price_per_hour + comisionTutorias;
+            room.precio_total = room.precio_total + comisionTotalTutoria;
         }
         let tiempoParse = (tiempoTotal.toFixed(2)).toString().split(".")
         let horasMin = tiempoParse[0].toString() + "." + Math.round(tiempoParse[1] /100 * 60).toString()
@@ -537,17 +554,17 @@ const anadirAutorizados = async function (req, res) {
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
                 nErrores++;
-            } else if(free && user.puntos >= 15){
+            }else if(free && user.puntos >= 15){
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-                //quitarle al usuario 15 puntos
+                //quitarle al usuario 15 puntos puesto que ha pagado con estos la clase
                 puntos = user.puntos;
                 puntos = puntos - 15;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
             }else if(!free){
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-                //sumarle al user 1 punto
+                //sumarle al usuario 1 punto por haber pagado
                 puntos = user.puntos;
                 puntos = puntos + 1;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
