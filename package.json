@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "istanbul cover -- user.test.js createRoom.test.js getRooms.test.js | codacy-coverage -p",
+        "test": "istanbul cover -- ./test/user.test.js ./test/tutor.test.js ./test/room.test.js | codacy-coverage -p",
         "test-with-coverage": "cat ./coverage/lcov.info | codacy-coverage -p .",
         "start": "nodemon api-studdybuddies-backend.js"
     },

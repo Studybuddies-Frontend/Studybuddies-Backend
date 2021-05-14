@@ -8,7 +8,7 @@ chai.use(chaiHttp);
 const url = 'http://localhost:3000/api/v3/tutor'
 let ID_TUTOR = 0;
 
-describe('Successfull tutor register: ', () => {
+/* describe('Successfull tutor register: ', () => {
     it('should return user data', (done) => {
         chai.request(url)
             .post('/register/tutor')
@@ -31,7 +31,7 @@ describe('Successfull tutor register: ', () => {
                 done();
             })
     })
-})
+}) */
 
 //GET ASIGNATURAS BY TUTOR
 //router.get('/asignaturas/:idTutor', roomController.getAsignaturasByTutor)

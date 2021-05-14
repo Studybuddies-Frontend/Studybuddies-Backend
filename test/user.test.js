@@ -85,7 +85,6 @@ describe('Unsuccessfull alumn register due to lack of username: ', () => {
             .end(function (err, res) {
                 //console.log(res.body)
                 expect(res).to.have.status(400);
-                console.log(res.statusMessage);
                 done();
             })
     })
@@ -108,7 +107,6 @@ describe('Unsuccessfull alumn register due to lack of password: ', () => {
             .end(function (err, res) {
                 //console.log(res.body)
                 expect(res).to.have.status(400);
-                console.log(res.statusMessage);
                 done();
             })
     })
@@ -268,7 +266,7 @@ describe('Unsuccessfull alumn register due to lack of grado: ', () => {
     })
 })
 
-/* describe('Unsuccessfull alumn register due to repeated username: ', () => {
+describe('Unsuccessfull alumn register due to repeated username: ', () => {
     it('should return an error', (done) => {
         chai.request(url)
             .post('/register/alumno')
@@ -284,7 +282,7 @@ describe('Unsuccessfull alumn register due to lack of grado: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
@@ -306,7 +304,7 @@ describe('Unsuccessfull alumn register due to repeated email: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
@@ -328,11 +326,11 @@ describe('Unsuccessfull alumn register due to different password/confirmPassword
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
-}) */
+})
 
 
 
@@ -356,7 +354,6 @@ describe('Successfull tutor register: ', () => {
                 "telefono": "674000000"
             })
             .end(function (err, res) {
-                //console.log(res.body)
                 expect(res).to.have.status(200);
                 ID_TUTOR = res.id;
                 done();
@@ -604,7 +601,7 @@ describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
     })
 })
 
-/* describe('Unsuccessfull tutor register due to repeated username: ', () => {
+describe('Unsuccessfull tutor register due to repeated username: ', () => {
     it('should return an error', (done) => {
         chai.request(url)
             .post('/register/tutor')
@@ -622,13 +619,13 @@ describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
-}) */
+})
 
-/* describe('Unsuccessfull tutor register due to repeated email: ', () => {
+describe('Unsuccessfull tutor register due to repeated email: ', () => {
     it('should return an error', (done) => {
         chai.request(url)
             .post('/register/tutor')
@@ -646,13 +643,13 @@ describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
-}) */
+})
 
-/* describe('Unsuccessfull tutor register due to different password/confirmPassword: ', () => {
+describe('Unsuccessfull tutor register due to different password/confirmPassword: ', () => {
     it('should return an error', (done) => {
         chai.request(url)
             .post('/register/alumno')
@@ -670,11 +667,11 @@ describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(422);
+                expect(res).to.have.status(200) && expect(res.body.result).to.equal(0);
                 done();
             })
     })
-}) */
+})
 
 //GET USER BY ID
 //router.get('/:id', userController.getUsuarioById);
@@ -911,7 +908,7 @@ describe('Unsuccessfull update due to invalid user id: ', () => {
     })
 })
 
-/* describe('Unsuccessfull update due to already used username: ', () => {
+describe('Unsuccessfull update due to already used username: ', () => {
     it('should return user data', (done) => {
         chai.request(url)
             .post('/update')
@@ -928,7 +925,7 @@ describe('Unsuccessfull update due to invalid user id: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(200);
+                expect(res).to.have.status(400);
                 done();
             })
     })
@@ -951,11 +948,11 @@ describe('Unsuccessfull update due to already used email: ', () => {
             })
             .end(function (err, res) {
                 //console.log(res.body)
-                expect(res).to.have.status(200);
+                expect(res).to.have.status(400);
                 done();
             })
     })
-}) */
+})
 
 //GET TUTORES
 //router.get('/role/tutor', userController.getTutores);
@@ -1003,7 +1000,7 @@ describe('Succesfull get mis tutores: ', () => {
 describe('Succesfull transformation from alumn to tutor: ', () => {
     it('should return user data', (done) => {
         chai.request(url)
-            .post(`/transform/${ID_ALUMNO}`)
+            .post(`/transform/93`)
             .send({
                 "descripcion": "Soy un alumno que se ha convertido en tutor",
                 "telefono": "674000000"

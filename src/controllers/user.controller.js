@@ -129,7 +129,7 @@ const getUsuarioById = async function (req, res) {
     let configuracion = parametros.configuracion();
 
     if (req.params.id) {
-        idUsuario = req.params.idRole;
+        idUsuario = req.params.id;
     } else {
         statusCode = 500;
         statusMessage = "General error";
