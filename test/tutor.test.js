@@ -1,17 +1,17 @@
-'use stricts'
+"use stricts"
 
-let chai = require('chai')
-let chaiHttp = require('chai-http')
-const expect = require('chai').expect;
+let chai = require("chai")
+let chaiHttp = require("chai-http")
+const expect = require("chai").expect;
 
 chai.use(chaiHttp);
-const url = 'http://localhost:3000/api/v3/tutor'
+const url = "http://localhost:3000/api/v3/tutor"
 let ID_TUTOR = 0;
 
-/* describe('Successfull tutor register: ', () => {
-    it('should return user data', (done) => {
+/* describe("Successfull tutor register: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "TutorPruebasTutorias",
                 "password": "TutorPruebasTutorias",
@@ -34,11 +34,11 @@ let ID_TUTOR = 0;
 }) */
 
 //GET ASIGNATURAS BY TUTOR
-//router.get('/asignaturas/:idTutor', roomController.getAsignaturasByTutor)
-describe('Successfull get asignaturas by tutor: ', () => {
-    it('should return user data', (done) => {
+//router.get("/asignaturas/:idTutor", roomController.getAsignaturasByTutor)
+describe("Successfull get asignaturas by tutor: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .get('/asignaturas/3')
+            .get("/asignaturas/3")
             .send({
             })
             .end(function (err, res) {
@@ -49,8 +49,8 @@ describe('Successfull get asignaturas by tutor: ', () => {
     })
 })
 
-describe('Unsuccessfull get asignaturas by tutor: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull get asignaturas by tutor: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .post(`/asignaturas/${ID_TUTOR}`)
             .send({

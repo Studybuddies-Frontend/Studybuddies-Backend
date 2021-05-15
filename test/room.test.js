@@ -1,21 +1,21 @@
-'use stricts'
+"use stricts"
 
-let chai = require('chai')
-let chaiHttp = require('chai-http')
-const expect = require('chai').expect;
+let chai = require("chai")
+let chaiHttp = require("chai-http")
+const expect = require("chai").expect;
 
 chai.use(chaiHttp);
-const url = 'http://localhost:3000/api/v3/room'
+const url = "http://localhost:3000/api/v3/room"
 
-let guidPrivateRoom = '';
-let guidPublicRoom = '';
+let guidPrivateRoom = "";
+let guidPublicRoom = "";
 
 
 // Tests Metodo: createRoom
-describe('Successfull Create Public Room: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Create Public Room: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Sala de estudio",
                 "university": "Sevilla",
@@ -39,10 +39,10 @@ describe('Successfull Create Public Room: ', () => {
     })
 })
 
-describe('Successfull Create Private Room: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Create Private Room: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -66,10 +66,10 @@ describe('Successfull Create Private Room: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of description: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of description: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": null,
                 "university": "Sevilla",
@@ -92,10 +92,10 @@ describe('Unsuccessfull Create Room due to lack of description: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of university: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of university: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria ejemplo",
                 "university": "",
@@ -118,10 +118,10 @@ describe('Unsuccessfull Create Room due to lack of university: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of degree: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of degree: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutori",
                 "university": "Sevilla",
@@ -144,10 +144,10 @@ describe('Unsuccessfull Create Room due to lack of degree: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of starting_time: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of starting_time: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -170,10 +170,10 @@ describe('Unsuccessfull Create Room due to lack of starting_time: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of ending_time: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of ending_time: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -196,10 +196,10 @@ describe('Unsuccessfull Create Room due to lack of ending_time: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of date: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of date: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -222,10 +222,10 @@ describe('Unsuccessfull Create Room due to lack of date: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of iTime: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of iTime: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -248,10 +248,10 @@ describe('Unsuccessfull Create Room due to lack of iTime: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of fTime: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of fTime: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -274,10 +274,10 @@ describe('Unsuccessfull Create Room due to lack of fTime: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of authorised_users: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of authorised_users: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -299,10 +299,10 @@ describe('Unsuccessfull Create Room due to lack of authorised_users: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of price_per_hour: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of price_per_hour: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -325,10 +325,10 @@ describe('Unsuccessfull Create Room due to lack of price_per_hour: ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of is_private : ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of is_private : ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -351,10 +351,10 @@ describe('Unsuccessfull Create Room due to lack of is_private : ', () => {
     })
 })
 
-describe('Unsuccessfull Create Room due to lack of id_user: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Create Room due to lack of id_user: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/create')
+            .post("/create")
             .send({
                 "description": "Tutoria",
                 "university": "Sevilla",
@@ -378,10 +378,10 @@ describe('Unsuccessfull Create Room due to lack of id_user: ', () => {
 })
 
 // Tests Metodo: getAllRooms
-describe('Succesfull Get All Active Rooms: ', () => {
-    it('should return room data', (done) => {
+describe("Succesfull Get All Active Rooms: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/all')
+            .get("/all")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -390,10 +390,10 @@ describe('Succesfull Get All Active Rooms: ', () => {
 })
 
 // Tests Metodo: getRoomById
-describe('Successfull Get Room By Guid: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Room By Guid: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/' + guidPrivateRoom)
+            .get("/" + guidPrivateRoom)
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -401,10 +401,10 @@ describe('Successfull Get Room By Guid: ', () => {
     })
 })
 
-describe('Unuccessfull Get Room By Guid due to an non-exist guid: ', () => {
-    it('should not return room data', (done) => {
+describe("Unuccessfull Get Room By Guid due to an non-exist guid: ", () => {
+    it("should not return room data", (done) => {
         chai.request(url)
-            .get('/1')
+            .get("/1")
             .end(function (err, res) {
                 expect(res).to.have.status(401);
                 done();
@@ -413,10 +413,10 @@ describe('Unuccessfull Get Room By Guid due to an non-exist guid: ', () => {
 })
 
 // Tests Metodo: getSalasEstudioActivas
-describe('Successfull Get Active Study Rooms from students: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Active Study Rooms from students: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/student/all')
+            .get("/student/all")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -425,10 +425,10 @@ describe('Successfull Get Active Study Rooms from students: ', () => {
 })
 
 // Tests Metodo: getTutoriasActivas
-describe('Successfull Get Active Study Rooms from tutors: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Active Study Rooms from tutors: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/tutor/all')
+            .get("/tutor/all")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -437,10 +437,10 @@ describe('Successfull Get Active Study Rooms from tutors: ', () => {
 })
 
 // Tests Metodo: getMisSalas
-describe('Successfull Get Rooms Made By Me: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Rooms Made By Me: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/mine/3')
+            .get("/mine/3")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -449,10 +449,10 @@ describe('Successfull Get Rooms Made By Me: ', () => {
 })
 
 // Tests Metodo: getMisTutoriasPagadas
-describe('Successfull Get Rooms Paid By Me: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Rooms Paid By Me: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/Tmine/2')
+            .get("/Tmine/2")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -461,10 +461,10 @@ describe('Successfull Get Rooms Paid By Me: ', () => {
 })
 
 // Tests Metodo: getMisTutorias
-describe('Successfull Get Rooms Made By Me as tutor: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Rooms Made By Me as tutor: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/tutor/mine/3')
+            .get("/tutor/mine/3")
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -473,10 +473,10 @@ describe('Successfull Get Rooms Made By Me as tutor: ', () => {
 })
 
 // Tests Metodo: anadirAutorizados
-describe('Successfull Add Authorised User: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Add Authorised User: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/autorizar')
+            .post("/autorizar")
             .send({
                 "guid": guidPrivateRoom,
                 "id_user": 1
@@ -488,10 +488,10 @@ describe('Successfull Add Authorised User: ', () => {
     })
 })
 
-describe('Unsuccessfull Add Authorised User due to lack of guid: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Add Authorised User due to lack of guid: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/autorizar')
+            .post("/autorizar")
             .send({
                 "id_user": 1
             })
@@ -502,10 +502,10 @@ describe('Unsuccessfull Add Authorised User due to lack of guid: ', () => {
     })
 })
 
-describe('Unsuccessfull Add Authorised User due to lack of id_user: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Add Authorised User due to lack of id_user: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/autorizar')
+            .post("/autorizar")
             .send({
                 "guid": guidPrivateRoom
             })
@@ -516,10 +516,10 @@ describe('Unsuccessfull Add Authorised User due to lack of id_user: ', () => {
     })
 })
 
-describe('Unsuccessfull Add Authorised User due to passing an user that already payed for the room: ', () => {
-    it('should return room data', (done) => {
+describe("Unsuccessfull Add Authorised User due to passing an user that already payed for the room: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .post('/autorizar')
+            .post("/autorizar")
             .send({
                 "guid": guidPrivateRoom,
                 "id_user": 2
@@ -532,10 +532,10 @@ describe('Unsuccessfull Add Authorised User due to passing an user that already 
 })
 
 // Tests Metodo: getSalasEstudioActivasById
-describe('Successfull Get Active Public Rooms By Guid: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Active Public Rooms By Guid: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/student/' + guidPublicRoom)
+            .get("/student/" + guidPublicRoom)
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -544,10 +544,10 @@ describe('Successfull Get Active Public Rooms By Guid: ', () => {
 })
 
 // Tests Metodo: getTutoriasActivasById
-describe('Successfull Get Private Public Rooms By Guid: ', () => {
-    it('should return room data', (done) => {
+describe("Successfull Get Private Public Rooms By Guid: ", () => {
+    it("should return room data", (done) => {
         chai.request(url)
-            .get('/tutor/' + guidPrivateRoom)
+            .get("/tutor/" + guidPrivateRoom)
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -556,10 +556,10 @@ describe('Successfull Get Private Public Rooms By Guid: ', () => {
 })
 
 // Tests Metodo: getUsuariosByTutoria
-describe('Successfull Get Users By Private Room: ', () => {
-    it('should return authorised users', (done) => {
+describe("Successfull Get Users By Private Room: ", () => {
+    it("should return authorised users", (done) => {
         chai.request(url)
-            .get('/usuariosAutorizados/' + guidPrivateRoom)
+            .get("/usuariosAutorizados/" + guidPrivateRoom)
             .end(function (err, res) {
                 expect(res).to.have.status(200);
                 done();
@@ -568,8 +568,8 @@ describe('Successfull Get Users By Private Room: ', () => {
 })
 
 // Tests Metodo: deleteRoom
-describe('Successfull Delete Room: ', () => {
-    it('should delete room ', (done) => {
+describe("Successfull Delete Room: ", () => {
+    it("should delete room ", (done) => {
         console.log(guidPublicRoom)
         chai.request(url)
             .delete(`/delete/${guidPublicRoom}` )

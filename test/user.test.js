@@ -1,19 +1,19 @@
-'use stricts'
+"use stricts"
 
-let chai = require('chai')
-let chaiHttp = require('chai-http')
-const expect = require('chai').expect;
+let chai = require("chai")
+let chaiHttp = require("chai-http")
+const expect = require("chai").expect;
 
 chai.use(chaiHttp);
-const url = 'http://localhost:3000/api/v3/user'
+const url = "http://localhost:3000/api/v3/user"
 let ID_ALUMNO = 0;
 let ID_TUTOR = 0;
 
 //LOGIN
-describe('Successfull login: ', () => {
-    it('should return user data', (done) => {
+describe("Successfull login: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/login')
+            .post("/login")
             .send({
                 "username": "admin",
                 "password": "admin"
@@ -26,10 +26,10 @@ describe('Successfull login: ', () => {
     })
 })
 
-describe('Unsuccessfull login: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull login: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/login')
+            .post("/login")
             .send({
                 "username": "adminError",
                 "password": "admin"
@@ -44,11 +44,11 @@ describe('Unsuccessfull login: ', () => {
 
 
 //REGISTER ALUMNO
-//router.post('/register/alumno', userController.registerAlumno);
-describe('Successfull alumn register: ', () => {
-    it('should return user data', (done) => {
+//router.post("/register/alumno", userController.registerAlumno);
+describe("Successfull alumn register: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -68,10 +68,10 @@ describe('Successfull alumn register: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of username: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of username: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": null,
                 "password": "AntonioPruebas",
@@ -90,10 +90,10 @@ describe('Unsuccessfull alumn register due to lack of username: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of password: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of password: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": null,
@@ -112,10 +112,10 @@ describe('Unsuccessfull alumn register due to lack of password: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of confirm password: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of confirm password: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -134,10 +134,10 @@ describe('Unsuccessfull alumn register due to lack of confirm password: ', () =>
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of nombre: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of nombre: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -156,10 +156,10 @@ describe('Unsuccessfull alumn register due to lack of nombre: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of apellidos: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of apellidos: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -178,10 +178,10 @@ describe('Unsuccessfull alumn register due to lack of apellidos: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of email: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of email: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -200,10 +200,10 @@ describe('Unsuccessfull alumn register due to lack of email: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to wrong email format: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to wrong email format: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -222,10 +222,10 @@ describe('Unsuccessfull alumn register due to wrong email format: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of universidad: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of universidad: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -244,10 +244,10 @@ describe('Unsuccessfull alumn register due to lack of universidad: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to lack of grado: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull alumn register due to lack of grado: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -266,10 +266,10 @@ describe('Unsuccessfull alumn register due to lack of grado: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to repeated username: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull alumn register due to repeated username: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -288,10 +288,10 @@ describe('Unsuccessfull alumn register due to repeated username: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to repeated email: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull alumn register due to repeated email: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas2",
                 "password": "AntonioPruebas2",
@@ -310,10 +310,10 @@ describe('Unsuccessfull alumn register due to repeated email: ', () => {
     })
 })
 
-describe('Unsuccessfull alumn register due to different password/confirmPassword: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull alumn register due to different password/confirmPassword: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebas",
@@ -336,11 +336,11 @@ describe('Unsuccessfull alumn register due to different password/confirmPassword
 
 
 //REGISTER TUTOR
-//router.post('/register/tutor', userController.registerTutor);
-describe('Successfull tutor register: ', () => {
-    it('should return user data', (done) => {
+//router.post("/register/tutor", userController.registerTutor);
+describe("Successfull tutor register: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebasTutor",
                 "password": "AntonioPruebasTutor",
@@ -361,10 +361,10 @@ describe('Successfull tutor register: ', () => {
     })
 })
 //--------------------------------
-describe('Unsuccessfull tutor register due to lack of username: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of username: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": null,
                 "password": "AntonioPruebasTutor",
@@ -385,10 +385,10 @@ describe('Unsuccessfull tutor register due to lack of username: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of password: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of password: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebasTutor",
                 "password": null,
@@ -409,10 +409,10 @@ describe('Unsuccessfull tutor register due to lack of password: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of confirm password: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of confirm password: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebasTutor",
                 "password": "AntonioPruebasTutor",
@@ -433,10 +433,10 @@ describe('Unsuccessfull tutor register due to lack of confirm password: ', () =>
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of nombre: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of nombre: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -457,10 +457,10 @@ describe('Unsuccessfull tutor register due to lack of nombre: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of apellidos: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of apellidos: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -481,10 +481,10 @@ describe('Unsuccessfull tutor register due to lack of apellidos: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of email: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of email: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -505,10 +505,10 @@ describe('Unsuccessfull tutor register due to lack of email: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to wrong email format: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to wrong email format: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -529,10 +529,10 @@ describe('Unsuccessfull tutor register due to wrong email format: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of universidad: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of universidad: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -553,10 +553,10 @@ describe('Unsuccessfull tutor register due to lack of universidad: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of grado: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of grado: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -577,10 +577,10 @@ describe('Unsuccessfull tutor register due to lack of grado: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull tutor register due to lack of descripcion: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebas",
                 "password": "AntonioPruebasTutor",
@@ -601,10 +601,10 @@ describe('Unsuccessfull tutor register due to lack of descripcion: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to repeated username: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull tutor register due to repeated username: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebasTutor",
                 "password": "AntonioPruebasTutor",
@@ -625,10 +625,10 @@ describe('Unsuccessfull tutor register due to repeated username: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to repeated email: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull tutor register due to repeated email: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/tutor')
+            .post("/register/tutor")
             .send({
                 "username": "AntonioPruebasTutor2",
                 "password": "AntonioPruebasTutor2",
@@ -649,10 +649,10 @@ describe('Unsuccessfull tutor register due to repeated email: ', () => {
     })
 })
 
-describe('Unsuccessfull tutor register due to different password/confirmPassword: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccessfull tutor register due to different password/confirmPassword: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
-            .post('/register/alumno')
+            .post("/register/alumno")
             .send({
                 "username": "AntonioPruebasTutor",
                 "password": "AntonioPruebasTutor",
@@ -674,9 +674,9 @@ describe('Unsuccessfull tutor register due to different password/confirmPassword
 })
 
 //GET USER BY ID
-//router.get('/:id', userController.getUsuarioById);
-describe('Succesfull get a user by its id: ', () => {
-    it('should return user data', (done) => {
+//router.get("/:id", userController.getUsuarioById);
+describe("Succesfull get a user by its id: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .get(`/1`)
             .end(function (err, res) {
@@ -687,8 +687,8 @@ describe('Succesfull get a user by its id: ', () => {
     })
 })
 
-describe('Unsuccesfull get a user by its id: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccesfull get a user by its id: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
             .get(`/666666666666666666666666666666666`) //??????????????????????
             .end(function (err, res) {
@@ -700,11 +700,11 @@ describe('Unsuccesfull get a user by its id: ', () => {
 })
 
 //UPDATE USER
-//router.post('/update', userController.updateUser);
-describe('Successfull update: ', () => {
-    it('should return user data', (done) => {
+//router.post("/update", userController.updateUser);
+describe("Successfull update: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -724,10 +724,10 @@ describe('Successfull update: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of username: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of username: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": null,
                 "id": ID_ALUMNO,
@@ -747,10 +747,10 @@ describe('Unsuccessfull update due to lack of username: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of nombre: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of nombre: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -770,10 +770,10 @@ describe('Unsuccessfull update due to lack of nombre: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of apellidos: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of apellidos: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -793,10 +793,10 @@ describe('Unsuccessfull update due to lack of apellidos: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of email: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of email: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -816,10 +816,10 @@ describe('Unsuccessfull update due to lack of email: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to wrong email format: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to wrong email format: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -839,10 +839,10 @@ describe('Unsuccessfull update due to wrong email format: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of universidad: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of universidad: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -862,10 +862,10 @@ describe('Unsuccessfull update due to lack of universidad: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to lack of grado: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to lack of grado: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": ID_ALUMNO,
@@ -885,10 +885,10 @@ describe('Unsuccessfull update due to lack of grado: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to invalid user id: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to invalid user id: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioPruebas",
                 "id": 666666666666666666666666666666666,
@@ -908,10 +908,10 @@ describe('Unsuccessfull update due to invalid user id: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to already used username: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to already used username: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "alumno",
                 "id": ID_ALUMNO,
@@ -931,10 +931,10 @@ describe('Unsuccessfull update due to already used username: ', () => {
     })
 })
 
-describe('Unsuccessfull update due to already used email: ', () => {
-    it('should return user data', (done) => {
+describe("Unsuccessfull update due to already used email: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
-            .post('/update')
+            .post("/update")
             .send({
                 "username": "AntonioAlumno",
                 "id": ID_ALUMNO,
@@ -955,9 +955,9 @@ describe('Unsuccessfull update due to already used email: ', () => {
 })
 
 //GET TUTORES
-//router.get('/role/tutor', userController.getTutores);
-describe('Succesfull get tutores: ', () => {
-    it('should return user data', (done) => {
+//router.get("/role/tutor", userController.getTutores);
+describe("Succesfull get tutores: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .get(`/role/tutor`)
             .end(function (err, res) {
@@ -970,9 +970,9 @@ describe('Succesfull get tutores: ', () => {
 
 
 //GET MIS TUTORES
-//router.get('/:id/myTutors', userController.getMisTutores);
-describe('Succesfull get mis tutores: ', () => {
-    it('should return user data', (done) => {
+//router.get("/:id/myTutors", userController.getMisTutores);
+describe("Succesfull get mis tutores: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .get(`/${ID_ALUMNO}/myTutors`)
             .end(function (err, res) {
@@ -983,8 +983,8 @@ describe('Succesfull get mis tutores: ', () => {
     })
 })
 
-/* describe('Unsuccesfull get mis tutores due to bad user id: ', () => {
-    it('should return user data', (done) => {
+/* describe("Unsuccesfull get mis tutores due to bad user id: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .get(`/6666666666666666666666666666/myTutors`) //??????????????????????
             .end(function (err, res) {
@@ -996,9 +996,9 @@ describe('Succesfull get mis tutores: ', () => {
 }) */
 
 //TRANSFORM ALUMNO -> TUTOR
-//router.post('/transform/:id', userController.transformAlumnoToTutor);
-describe('Succesfull transformation from alumn to tutor: ', () => {
-    it('should return user data', (done) => {
+//router.post("/transform/:id", userController.transformAlumnoToTutor);
+describe("Succesfull transformation from alumn to tutor: ", () => {
+    it("should return user data", (done) => {
         chai.request(url)
             .post(`/transform/93`)
             .send({
@@ -1013,8 +1013,8 @@ describe('Succesfull transformation from alumn to tutor: ', () => {
     })
 })
 
-describe('Unsuccesfull transformation from alumn to tutor due to lack of description: ', () => {
-    it('should return an error', (done) => {
+describe("Unsuccesfull transformation from alumn to tutor due to lack of description: ", () => {
+    it("should return an error", (done) => {
         chai.request(url)
             .post(`/transform/${ID_ALUMNO}`) //??????????????????????
             .send({
