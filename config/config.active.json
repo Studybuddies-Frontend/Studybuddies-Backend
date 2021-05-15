@@ -7,7 +7,7 @@
         "password": "$passw0rd123"
     },
     "Mongo_DB": {
-        "host": "cluster0.p7sle.mongodb.net",
+        "host": "localhost",
         "port": "27017",
         "dbAdmin": "admin",
         "username": "admin",
