@@ -31,6 +31,7 @@ const createRoom = async function (req, res) {
     let id_user = "";
 
     let conexionMongodb = {};
+    let existeConexionMongo = false;
 
     let configuracion = parametros.configuracion();
     let actualDate = new Date();
@@ -54,25 +55,29 @@ const createRoom = async function (req, res) {
         if (req.body.ending_time) {
             ending_time = new Date(req.body.ending_time);
         }
-        let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
-        let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
-        let fechaFinIgualAFechaInicio = ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() == starting_time.getDate();
-        let horaFinAnteriorAHoraInicio = (ending_time.getHours() < starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() <= starting_time.getMinutes());
 
-        if (fechaPasado) {
-            statusCode = 400;
-            statusMessage = "Form error, la fecha de inicio no puede estar en pasado";
-            nErrores++;
-        }
-        if (fechaFinAnteriorAFechaInicio) {
-            statusCode = 400;
-            statusMessage = "Form error, la fecha de fin no puede ser anterior a la fecha de inicio";
-            nErrores++;
-        }
-        if (fechaFinIgualAFechaInicio && horaFinAnteriorAHoraInicio) {
-            statusCode = 400;
-            statusMessage = "Form error, la hora de fin no puede ser anterior a la de inicio";
-            nErrores++;
+
+        if (starting_time && ending_time) {
+            let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
+            let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
+            let fechaFinIgualAFechaInicio = ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() == starting_time.getDate();
+            let horaFinAnteriorAHoraInicio = (ending_time.getHours() < starting_time.getHours()) || (ending_time.getHours() == starting_time.getHours() && ending_time.getMinutes() <= starting_time.getMinutes());
+
+            if (fechaPasado) {
+                statusCode = 400;
+                statusMessage = "Form error, la fecha de inicio no puede estar en pasado";
+                nErrores++;
+            }
+            if (fechaFinAnteriorAFechaInicio) {
+                statusCode = 400;
+                statusMessage = "Form error, la fecha de fin no puede ser anterior a la fecha de inicio";
+                nErrores++;
+            }
+            if (fechaFinIgualAFechaInicio && horaFinAnteriorAHoraInicio) {
+                statusCode = 400;
+                statusMessage = "Form error, la hora de fin no puede ser anterior a la de inicio";
+                nErrores++;
+            }
         }
         if (req.body.price_per_hour) {
             price_per_hour = req.body.price_per_hour;
@@ -112,7 +117,72 @@ const createRoom = async function (req, res) {
         if (req.body.id_user) {
             id_user = req.body.id_user;
         }
+    }
 
+    if (!description) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una descripcion";
+        nErrores++;
+    }
+    if (!university) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una universidad";
+        nErrores++;
+    }
+    if (!degree) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado un grado";
+        nErrores++;
+    }
+    if (!subject) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una asignatura";
+        nErrores++;
+    }
+    if (!starting_time) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una fecha de inicio";
+        nErrores++;
+    }
+    if (!ending_time) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una fecha de fin";
+        nErrores++;
+    }
+    if (!req.body.price_per_hour && req.body.price_per_hour != 0) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado un precio por hora";
+        nErrores++;
+    }
+    if (!req.body.is_private && req.body.is_private != false) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado el atributo is_private";
+        nErrores++;
+    }
+    if (!date) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una fecha";
+        nErrores++;
+    }
+    if (!iTime) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una hora de inicio";
+        nErrores++;
+    }
+    if (!fTime) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado una hora de fin";
+        nErrores++;
+    }
+    if (!req.body.authorised_users && req.body.authorised_users != []) {
+        statusCode = 400;
+        statusMessage = "No se han proporcionado los usuarios autorizados";
+        nErrores++;
+    }
+    if (!id_user) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado el id del creador de la sala";
+        nErrores++;
     }
 
 
@@ -125,6 +195,7 @@ const createRoom = async function (req, res) {
     if (nErrores === 0) {
         try {
             conexionMongodb = await mongodbConnection.crearConexion(configuracion.mongoConf.host, configuracion.mongoConf.username, configuracion.mongoConf.password, configuracion.mongoConf.name);
+            existeConexionMongo = true;
         } catch (err) {
             statusCode = 500;
             statusMessage = "Connection error";
@@ -137,6 +208,7 @@ const createRoom = async function (req, res) {
 
         let precioTotal = "";
         let tiempoTotal = Math.abs(ending_time - starting_time) / 36e5;
+      
         if(price_per_hour) {
             //Añadimos las comisiones:
             price_per_hour = price_per_hour + comisionTutorias;
@@ -144,7 +216,7 @@ const createRoom = async function (req, res) {
             precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
         }
         let tiempoParse = (tiempoTotal.toFixed(2)).toString().split(".")
-        let horasMin = tiempoParse[0].toString() + "." + Math.round(tiempoParse[1] /100 * 60).toString()
+        let horasMin = tiempoParse[0].toString() + "." + Math.round(tiempoParse[1] / 100 * 60).toString()
         let room = new mongodbRoom.Room()
         room.guid = guid;
         room.description = description
@@ -173,9 +245,9 @@ const createRoom = async function (req, res) {
         }
     }
     // Cerramos la conexion mongo
-/*     if (conexionMongodb) {
+    if (existeConexionMongo) {
         await mongodbConnection.cerrarConexion(conexionMongodb);
-    } */
+    }
 
     // Devolvemos la respuesta
     if (nErrores === 0) {
@@ -370,7 +442,7 @@ const getMisTutorias = async function (req, res) {
 
     let nErrores = 0;
     let tutorias = {};
-    let id= req.params.id;
+    let id = req.params.id;
 
     let conexionMongodb = {};
 
@@ -536,11 +608,11 @@ const anadirAutorizados = async function (req, res) {
         }
     }
 
-    if(req.body.free){
+    if (req.body.free) {
         free = req.body.free;
     }
 
-    if(req.body.id_user){
+    if (req.body.id_user) {
         try {
             user = await mysqlUser.getById(conexionMysql, req.body.id_user)
         }
@@ -549,6 +621,16 @@ const anadirAutorizados = async function (req, res) {
             statusMessage = "No se ha encontrado el usuario con id " + usuariosAutorizados[i];
             nErrores++;
         }
+    } else {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado el id del usuario";
+        nErrores++;
+    }
+
+    if(!req.body.guid) {
+        statusCode = 400;
+        statusMessage = "No se ha proporcionado el guid de la sala";
+        nErrores++;
     }
 
     if (nErrores === 0) {
@@ -559,31 +641,31 @@ const anadirAutorizados = async function (req, res) {
             statusCode = 500;
             nErrores++;
         }
-        try{
+        try {
             if (room[0].authorised_users.includes(req.body.id_user)) {
                 statusCode = 423;
                 statusMessage = "Este cliente ya ha pagado"
                 nErrores++;
-            }else if(free && user.puntos >= 15){
+            } else if (free && user.puntos >= 15) {
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
                 //quitarle al usuario 15 puntos puesto que ha pagado con estos la clase
                 puntos = user.puntos;
                 puntos = puntos - 15;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
-            }else if(!free){
+            } else if (!free) {
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
                 //sumarle al usuario 1 punto por haber pagado
                 puntos = user.puntos;
                 puntos = puntos + 1;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
-            }else {
+            } else {
                 statusCode = 423;
                 statusMessage = "Este cliente no tiene suficientes puntos para pagar la clase gratuita"
                 nErrores++;
             }
-        }catch(err){
+        } catch (err) {
 
         }
     }
@@ -805,7 +887,7 @@ const getUsuariosByTutoria = async function (req, res) {
 
     if (nErrores === 0) {
         if (Array.isArray(usuariosAutorizados) && usuariosAutorizados.length > 0) {
-            for (var i=0; i < usuariosAutorizados.length; i++) {
+            for (var i = 0; i < usuariosAutorizados.length; i++) {
                 let datosUsuario = {};
                 try {
                     user = await mysqlUser.getById(conexionMysql, usuariosAutorizados[i])
@@ -874,13 +956,13 @@ const deleteRoom = async function (req, res) {
 
     if (nErrores === 0) {
         try {
-         sala = await new mongodbRoom.getRoomByIdSinFecha(conexionMongodb, req.params.guid);
-         if(sala[0].authorised_users.length > 0){
-             statusCode = 400;
-             statusMessage = "La tutoria tiene un usuario autorizado";
-             nErrores++;
+            sala = await new mongodbRoom.getRoomByIdSinFecha(conexionMongodb, req.params.guid);
+            if (sala[0].authorised_users.length > 0) {
+                statusCode = 400;
+                statusMessage = "La tutoria tiene un usuario autorizado";
+                nErrores++;
+            }
         }
-    }
         catch (err) {
             statusCode = 500;
             nErrores++;
@@ -890,7 +972,7 @@ const deleteRoom = async function (req, res) {
 
     if (nErrores === 0) {
         try {
-          await new mongodbRoom.deleteRoom(conexionMongodb, req.params.guid);
+            await new mongodbRoom.deleteRoom(conexionMongodb, req.params.guid);
         }
         catch (err) {
             statusCode = 500;
@@ -903,7 +985,7 @@ const deleteRoom = async function (req, res) {
     }
 
     if (nErrores === 0) {
-        res.status(200).send({Message: "Sala borrada con éxito"});
+        res.status(200).send({ Message: "Sala borrada con éxito" });
     } else {
         res.status(statusCode || 500).send(statusMessage || "General Error");
     }
