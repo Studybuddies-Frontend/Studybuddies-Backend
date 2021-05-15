@@ -8,6 +8,8 @@ const mongodbRoom = require("../databases/mongodb/models/rooms.model");
 const mysqlConnection = require("../databases/mysql/repository/mysqldbManager");
 const mysqlUser = require("../databases/mysql/models/user.model")
 
+const comisionTutorias = 0.5
+
 
 const createRoom = async function (req, res) {
     let nErrores = 0;
@@ -54,6 +56,7 @@ const createRoom = async function (req, res) {
             ending_time = new Date(req.body.ending_time);
         }
 
+
         if (starting_time && ending_time) {
             let fechaPasado = starting_time.getFullYear() < actualDate.getFullYear() || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 < actualDate.getMonth() + 1 || starting_time.getFullYear() == actualDate.getFullYear() && starting_time.getMonth() + 1 == actualDate.getMonth() + 1 && starting_time.getDate() < actualDate.getDate();
             let fechaFinAnteriorAFechaInicio = ending_time.getFullYear() < starting_time.getFullYear() || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 < starting_time.getMonth() + 1 || ending_time.getFullYear() == starting_time.getFullYear() && ending_time.getMonth() + 1 == starting_time.getMonth() + 1 && ending_time.getDate() < starting_time.getDate();
@@ -81,6 +84,18 @@ const createRoom = async function (req, res) {
         }
         if (req.body.is_private) {
             is_private = req.body.is_private;
+        }
+        //Comprobamos que la duración no sea menor a una hora
+        if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) < 1) {
+            statusCode = 400;
+            statusMessage = "No se puede crear una tutoria de duracion menor a una hora";
+            nErrores++;
+        }
+        //Comprobamos que la duración no sea mayor a cinco horas
+        if (is_private==true && (Math.abs(ending_time - starting_time) / 36e5) > 5) {
+            statusCode = 400;
+            statusMessage = "No se puede crear una tutoria de duracion mayor a cinco horas";
+            nErrores++;
         }
         if (req.body.date) {
             date = req.body.date;
@@ -193,7 +208,11 @@ const createRoom = async function (req, res) {
 
         let precioTotal = "";
         let tiempoTotal = Math.abs(ending_time - starting_time) / 36e5;
-        if (price_per_hour) {
+      
+        if(price_per_hour) {
+            //Añadimos las comisiones:
+            price_per_hour = price_per_hour + comisionTutorias;
+            //Calculamos el precio total a partir del precio por hora con las comisiones
             precioTotal = (price_per_hour * tiempoTotal).toFixed(2);
         }
         let tiempoParse = (tiempoTotal.toFixed(2)).toString().split(".")
@@ -630,14 +649,14 @@ const anadirAutorizados = async function (req, res) {
             } else if (free && user.puntos >= 15) {
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-                //quitarle al usuario 15 puntos
+                //quitarle al usuario 15 puntos puesto que ha pagado con estos la clase
                 puntos = user.puntos;
                 puntos = puntos - 15;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);
             } else if (!free) {
                 room[0].authorised_users.push(req.body.id_user);
                 await mongodbRoom.updateRoom(conexionMongodb, req.body.guid, room[0].authorised_users, "rooms");
-                //sumarle al user 1 punto
+                //sumarle al usuario 1 punto por haber pagado
                 puntos = user.puntos;
                 puntos = puntos + 1;
                 await mysqlUser.updatePuntosUsuario(conexionMysql, req.body.id_user, puntos);

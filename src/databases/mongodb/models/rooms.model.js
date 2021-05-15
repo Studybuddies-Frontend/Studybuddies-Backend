@@ -22,7 +22,7 @@ class Room {
     }
 }
 
-const comisionTutorias = 0.5
+
 
 const guardarRoom = function (db, room, colRooms) {
     return new Promise((resolve, reject) => {
@@ -35,9 +35,6 @@ const guardarRoom = function (db, room, colRooms) {
             room.starting_time.setHours( room.starting_time.getHours() + 2 );
             room.ending_time.setHours( room.ending_time.getHours() + 2 );
 
-            //Añadimos las comisiones:
-            room.price_per_hour = room.price_per_hour + comisionTutorias;
-            room.precio_total = room.precio_total + comisionTutorias;
             roomCollection.insertOne(room).then((result) => {
                 resolve()
             })
